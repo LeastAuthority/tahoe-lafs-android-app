@@ -20,11 +20,12 @@ INSTALLATION
 
 Debug version:
 
-./gradlew assebleDebug
+`./gradlew assebleDebug`
 
 Production version:
 
-./gradlew assembleRelease
+`./gradlew assembleRelease`
+
 
 LICENCE
 =======
