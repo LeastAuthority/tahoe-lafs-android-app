@@ -4,7 +4,7 @@
 
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.camera" />
-    <uses-permission android:name="android.permission.FLASLIGHT" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-feature android:name="android.hardware.camera.flash"/>
     <uses-permission android:name="android.permission.CAMERA"/>
 
