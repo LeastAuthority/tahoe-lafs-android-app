@@ -13,7 +13,7 @@ For full documentation of Tahoe-LAFS, please see
 http://tahoe-lafs.readthedocs.io/en/latest/
 
 
-|readthedocs|  |travis|  |codecov|
+|readthedocs|  |build|  |codecov|
 
 INSTALLATION
 ==========
