@@ -80,7 +80,7 @@ class ApiResponseCall<S : Any, E : Any>(
     override fun cancel() = delegate.cancel()
 
     override fun execute(): Response<ApiResponse<S, E>> {
-        throw UnsupportedOperationException("NetworkResponseCall doesn't support execute")
+        throw UnsupportedOperationException("Network Call doesn't support execute")
     }
 
     override fun request(): Request = delegate.request()
