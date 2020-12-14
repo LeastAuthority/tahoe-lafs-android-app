@@ -1,4 +1,4 @@
-package org.tahoe.lafs
+package org.tahoe.lafs.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

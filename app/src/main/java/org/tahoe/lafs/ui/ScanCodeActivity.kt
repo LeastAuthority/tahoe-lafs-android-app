@@ -1,4 +1,4 @@
-package org.tahoe.lafs
+package org.tahoe.lafs.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.budiyev.android.codescanner.*
 import kotlinx.android.synthetic.main.activity_code_scanner.*
+import org.tahoe.lafs.R
 
 
 class ScanCodeActivity : AppCompatActivity() {
