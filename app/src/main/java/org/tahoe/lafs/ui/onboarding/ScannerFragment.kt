@@ -1,26 +1,35 @@
-package org.tahoe.lafs.ui
+package org.tahoe.lafs.ui.onboarding
 
-import android.Manifest
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.budiyev.android.codescanner.*
-import kotlinx.android.synthetic.main.activity_code_scanner.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_scan.*
 import org.tahoe.lafs.R
+import org.tahoe.lafs.extension.set
+import org.tahoe.lafs.ui.base.BaseFragment
+import org.tahoe.lafs.ui.home.HomeActivity
+import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_URL
+import javax.inject.Inject
 
+@AndroidEntryPoint
+class ScannerFragment : BaseFragment() {
 
-class ScanCodeActivity : AppCompatActivity() {
+    @Inject
+    lateinit var preferences: SharedPreferences
+
     private lateinit var codeScanner: CodeScanner
-    private val RC_PERMISSION = 10
-    private var permissionGranted = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_code_scanner)
+    override fun getLayoutId() = R.layout.fragment_scan
 
-        checkPermissions()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        checkCameraPermissions()
 
         if (permissionGranted) {
             initCodeScanner()
@@ -29,24 +38,8 @@ class ScanCodeActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                permissionGranted = false
-                requestPermissions(
-                    arrayOf(Manifest.permission.CAMERA),
-                    RC_PERMISSION
-                )
-            } else {
-                permissionGranted = true
-            }
-        } else {
-            permissionGranted = true
-        }
-    }
-
     private fun initCodeScanner() {
-        codeScanner = CodeScanner(this, scanner_view)
+        codeScanner = CodeScanner(requireContext(), scanner_view)
         codeScanner.camera = CodeScanner.CAMERA_BACK
         codeScanner.formats = CodeScanner.TWO_DIMENSIONAL_FORMATS
         codeScanner.autoFocusMode = AutoFocusMode.SAFE
@@ -57,14 +50,16 @@ class ScanCodeActivity : AppCompatActivity() {
 
     private fun addCallbacks() {
         codeScanner.decodeCallback = DecodeCallback {
-            runOnUiThread {
-                Toast.makeText(this, "Scan Result: ${it.text}", Toast.LENGTH_LONG).show()
+            activity?.runOnUiThread {
+                preferences.set(SCANNER_URL, it.text)
+                startActivity(Intent(activity, HomeActivity::class.java))
+                activity?.finish()
             }
         }
         codeScanner.errorCallback = ErrorCallback {
-            runOnUiThread {
+            activity?.runOnUiThread {
                 Toast.makeText(
-                    this, "Camera initialization error: ${it.message}",
+                    requireContext(), "Camera initialization error: ${it.message}",
                     Toast.LENGTH_LONG
                 ).show()
             }

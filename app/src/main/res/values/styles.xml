@@ -1,0 +1,52 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/purple_700</item>
+        <item name="colorPrimaryVariant">@color/purple_500</item>
+        <item name="colorAccent">@color/purple_200</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnError">@color/white</item>
+    </style>
+
+    <style name="AppTheme.FullScreen">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+    </style>
+
+    <!-- Text Typeface Styles -->
+    <style name="TextWhite">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextWhite.H2">
+        <item name="fontFamily">@font/roboto_thin</item>
+        <item name="android:textSize">60sp</item>
+        <item name="lineHeight">70sp</item>
+    </style>
+
+    <style name="TextWhite.H3">
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">48sp</item>
+        <item name="lineHeight">56sp</item>
+    </style>
+
+    <style name="TextWhite.Body2">
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">20sp</item>
+    </style>
+
+    <style name="TextWhite.Button">
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">16sp</item>
+    </style>
+
+</resources>

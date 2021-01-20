@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Tahoe Lafs</string>
+    <string name="welcome">Welcome</string>
+    <string name="intro_body">To get started:\n1. Start Gridsync on your computer\n2. Make sure your mobile device is connected to the same local network as the computer where you’re running Gridsync</string>
+    <string name="get_started">GET STARTED</string>
+    <string name="connect_your_device">Connect \nyour device</string>
+    <string name="intro_scan_code_body">Press the \"Link Device\" button in Gridsync…</string>
+    <string name="scan_qr_code">SCAN QR CODE</string>
 </resources>
