@@ -6,4 +6,13 @@
     <string name="connect_your_device">Connect \nyour device</string>
     <string name="intro_scan_code_body">Press the \"Link Device\" button in Gridsync…</string>
     <string name="scan_qr_code">SCAN QR CODE</string>
+    <string name="demo_grid">Demo Grid</string>
+    <string name="connected_gateway_placeholder">Connected To: %s</string>
+    <string name="nav_header_desc">Navigation Header</string>
+    <string name="disconnect_menu">Disconnect…</string>
+    <string name="scan_qr_code_menu">Scan QR code…</string>
+    <string name="body_text">Body 2</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="sync_content_description">Sync button</string>
 </resources>

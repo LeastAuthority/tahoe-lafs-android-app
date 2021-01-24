@@ -9,6 +9,7 @@ import org.tahoe.lafs.R
 import org.tahoe.lafs.extension.get
 import org.tahoe.lafs.ui.base.BaseFragment
 import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_URL
+import org.tahoe.lafs.utils.Utils
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -27,7 +28,10 @@ class MagicFolderFragment : BaseFragment() {
     }
 
     private fun initView() {
-        txtBody.text = preferences.get(SCANNER_URL, "EMPTY")
+        val scannedUrl = preferences.get(SCANNER_URL, "EMPTY")
+        txtBody.text = scannedUrl
+        (activity as HomeActivity).setToolbarText("Demo Grid", "Last updated: Just Now")
+        (activity as HomeActivity).setNavigationViewDetails(Utils.getGridSyncEndPointIp(scannedUrl))
     }
 
     private fun initEventListeners() {

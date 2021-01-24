@@ -14,4 +14,6 @@
     <dimen name="zero_dp">0dp</dimen>
 
     <dimen name="button_size">57dp</dimen>
+    <dimen name="nav_header_height">195dp</dimen>
+    <dimen name="action_bar_size">55dp</dimen>
 </resources>
