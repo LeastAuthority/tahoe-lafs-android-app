@@ -75,6 +75,12 @@
         <item name="lineHeight">14sp</item>
     </style>
 
+    <style name="TextBlack.SubTitle1">
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">18sp</item>
+        <item name="lineHeight">24sp</item>
+    </style>
+
     <style name="TextWhite.Button">
         <item name="fontFamily">@font/roboto_medium</item>
         <item name="android:textSize">14sp</item>

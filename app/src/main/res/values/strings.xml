@@ -15,4 +15,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="sync_content_description">Sync button</string>
+    <string name="something_went_wrong">Something went wrong. Please try again later.</string>
+    <string name="file_size">10 files; 20 MB</string>
 </resources>
