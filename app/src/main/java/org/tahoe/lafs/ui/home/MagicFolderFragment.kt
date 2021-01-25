@@ -13,6 +13,8 @@ import org.tahoe.lafs.R
 import org.tahoe.lafs.extension.get
 import org.tahoe.lafs.network.base.Resource
 import org.tahoe.lafs.network.services.GridApiDataHandler
+import org.tahoe.lafs.network.services.GridApiDataHandler.EMPTY
+import org.tahoe.lafs.network.services.GridNode
 import org.tahoe.lafs.ui.base.BaseFragment
 import org.tahoe.lafs.ui.viewmodel.GetFileStructureViewModel
 import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_URL
@@ -20,13 +22,13 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MagicFolderFragment : BaseFragment() {
+class MagicFolderFragment : BaseFragment(), GridItemClickListener {
 
     @Inject
     lateinit var preferences: SharedPreferences
 
     private val getFileStructureViewModel: GetFileStructureViewModel by viewModels()
-    private lateinit var gridMagicFolderAdapter: GridMagicFolderAdapter
+    private lateinit var gridFolderAdapter: GridFolderAdapter
 
     override fun getLayoutId() = R.layout.fragment_magic
 
@@ -42,7 +44,7 @@ class MagicFolderFragment : BaseFragment() {
         recyclerView.layoutManager = layoutManager
         recyclerView.itemAnimator = DefaultItemAnimator()
 
-        val scannedUrl = preferences.get(SCANNER_URL, "EMPTY")
+        val scannedUrl = preferences.get(SCANNER_URL, EMPTY)
         (activity as HomeActivity).setToolbarText("Demo Grid", "Last updated: Just Now")
         (activity as HomeActivity).setNavigationViewDetails(
             GridApiDataHandler.getGridSyncEndPointIp(
@@ -76,11 +78,15 @@ class MagicFolderFragment : BaseFragment() {
                     )
 
                     if (nodesList.isNotEmpty()) {
-                        gridMagicFolderAdapter = GridMagicFolderAdapter(nodesList)
-                        recyclerView.adapter = gridMagicFolderAdapter
+                        gridFolderAdapter = GridFolderAdapter(nodesList, this)
+                        recyclerView.adapter = gridFolderAdapter
                     }
                 }
             }
         })
+    }
+
+    override fun onGridItemClickListener(gridNode: GridNode) {
+        Timber.d("Selected Node $gridNode")
     }
 }

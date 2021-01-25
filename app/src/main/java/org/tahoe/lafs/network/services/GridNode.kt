@@ -7,5 +7,6 @@ data class GridNode(
     val linkMoTime: Double,
     val linkCrTime: Double,
     val mutable: Boolean,
-    val name: String
+    val name: String,
+    val isDir: Boolean
 )

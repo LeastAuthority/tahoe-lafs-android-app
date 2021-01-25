@@ -9,7 +9,8 @@ object GridApiDataHandler {
 
     private val TYPE_JSON = "?t=json"
     private val URI_SCHEMA = "/uri/"
-    private val EMPTY = ""
+    private val DIR_NODE = "dirnode"
+    const val EMPTY = ""
 
     fun getGridSyncEndPointIp(scannedUrl: String): String {
         if (scannedUrl.isNotBlank()) {
@@ -39,6 +40,7 @@ object GridApiDataHandler {
                 for (key in childrenJsonObject.keySet()) {
                     val nodeElement = childrenJsonObject.get(key).asJsonArray
                     if (nodeElement.isJsonArray && nodeElement.asJsonArray.count() > 1) {
+                        val dirNode = nodeElement.asJsonArray[0].asString
                         val detailsElement: JsonObject? = nodeElement.asJsonArray[1].asJsonObject
                         detailsElement?.let { details ->
                             val mutable: Boolean = details.get("mutable").asBoolean
@@ -72,11 +74,12 @@ object GridApiDataHandler {
                                             linkMoTime,
                                             linkCrTime,
                                             mutable,
-                                            key
+                                            key,
+                                            dirNode == DIR_NODE
                                         )
                                     )
                                 } else {
-                                    // Don't add personal folder to list
+                                    Timber.d("Ignore the personal folder with name = $key")
                                 }
                             } else {
                                 nodesList.add(
@@ -87,7 +90,8 @@ object GridApiDataHandler {
                                         linkMoTime,
                                         linkCrTime,
                                         mutable,
-                                        key
+                                        key,
+                                        dirNode == DIR_NODE
                                     )
                                 )
                             }

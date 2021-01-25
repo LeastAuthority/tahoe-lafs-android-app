@@ -1,6 +1,7 @@
 package org.tahoe.lafs.ui.home
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -14,10 +15,19 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 import org.tahoe.lafs.R
+import org.tahoe.lafs.extension.remove
 import org.tahoe.lafs.extension.showFullScreenOverStatusBar
+import org.tahoe.lafs.ui.onboarding.StartActivity
+import org.tahoe.lafs.ui.onboarding.StartActivity.Companion.SCANNER_FRAGMENT
+import org.tahoe.lafs.ui.onboarding.StartActivity.Companion.START_FRAGMENT
+import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_URL
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,9 +97,20 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.disconnect -> {
                 // Handle disconnect
+                preferences.remove(SCANNER_URL)
+                val intent = Intent(this, StartActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(0, 0)
+                finish()
             }
 
             R.id.scanCode -> {
+                preferences.remove(SCANNER_URL)
+                val intent = Intent(this, StartActivity::class.java)
+                intent.putExtra(START_FRAGMENT, SCANNER_FRAGMENT)
+                startActivity(intent)
+                overridePendingTransition(0, 0)
+                finish()
             }
 
             R.id.testItem1 -> {
