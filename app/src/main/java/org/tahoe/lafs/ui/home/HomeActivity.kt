@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
@@ -14,6 +15,7 @@ import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
+import org.greenrobot.eventbus.EventBus
 import org.tahoe.lafs.R
 import org.tahoe.lafs.extension.remove
 import org.tahoe.lafs.extension.showFullScreenOverStatusBar
@@ -23,11 +25,14 @@ import org.tahoe.lafs.ui.onboarding.StartActivity.Companion.START_FRAGMENT
 import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_URL
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     @Inject
     lateinit var preferences: SharedPreferences
+
+    private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +47,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
 
-        val toggle = ActionBarDrawerToggle(
+        toggle = ActionBarDrawerToggle(
             this,
             drawerLayout,
             toolbar,
@@ -51,7 +56,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-
         navigationView.setNavigationItemSelectedListener(this)
     }
 
@@ -64,23 +68,64 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.home_navhost_fragment)
+        val backStackEntryCount = navHostFragment?.childFragmentManager?.backStackEntryCount ?: 0
+
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
+        } else if (backStackEntryCount > 0) {
+            navHostFragment?.childFragmentManager?.popBackStack()
         } else {
             super.onBackPressed()
         }
     }
 
+    /**
+     * Sets top toolbar text views
+     */
     fun setToolbarText(title: String, subTitle: String) {
         txtToolbarTitle.text = title
         txtToolbarDesc.text = subTitle
+        btnRefresh.setOnClickListener {
+            EventBus.getDefault().post(RefreshDataEvent())
+        }
     }
 
+    /**
+     * Sets side menu item values
+     */
     fun setNavigationViewDetails(gateway: String) {
         val headerView = navigationView.getHeaderView(0)
         val txtGatewayDetails = headerView.findViewById<AppCompatTextView>(R.id.txtGatewayDetails)
         txtGatewayDetails.text = getString(R.string.connected_gateway_placeholder, gateway)
+    }
 
+    /**
+     * Changes the icon of the drawer to back
+     */
+    fun showBackButton() {
+        toggle.isDrawerIndicatorEnabled = false
+        toggle.toolbarNavigationClickListener = View.OnClickListener {
+            if (!toggle.isDrawerIndicatorEnabled) {
+                onBackPressed()
+            } else {
+                if (drawerLayout.isDrawerOpen(navigationView)) {
+                    drawerLayout.closeDrawer(navigationView)
+                } else {
+                    drawerLayout.openDrawer(navigationView)
+                }
+            }
+        }
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+    }
+
+    /**
+     * Changes the icon of the drawer to menu
+     */
+    fun showDrawerButton() {
+        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
+        toggle.isDrawerIndicatorEnabled = true
+        toggle.syncState()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -124,3 +169,5 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 }
+
+class RefreshDataEvent()

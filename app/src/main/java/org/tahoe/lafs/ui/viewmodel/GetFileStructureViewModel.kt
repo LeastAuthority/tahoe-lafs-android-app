@@ -11,12 +11,21 @@ class GetFileStructureViewModel @ViewModelInject constructor(
     private val gridSyncApiRepository: GridSyncApiRepository
 ) : BaseViewModel() {
 
-    private val _magicFolderData = MutableLiveData<Resource<JsonElement>>()
-    val magicFolderData: MutableLiveData<Resource<JsonElement>> = _magicFolderData
+    private val _folderStructure = MutableLiveData<Resource<JsonElement>>()
+    val folderStructure: MutableLiveData<Resource<JsonElement>> = _folderStructure
 
-    fun getMagicFolder(url: String) {
-        getResult({ gridSyncApiRepository.getMagicFolder(url) }) {
-            _magicFolderData.value = it
+    private val _adminFolderStructure = MutableLiveData<Resource<JsonElement>>()
+    val adminFolderStructure: MutableLiveData<Resource<JsonElement>> = _adminFolderStructure
+
+    fun getFolderStructure(url: String) {
+        getResult({ gridSyncApiRepository.getFolderStructure(url) }) {
+            _folderStructure.value = it
+        }
+    }
+
+    fun getAdminFolderStructure(url: String) {
+        getResult({ gridSyncApiRepository.getFolderStructure(url) }) {
+            _adminFolderStructure.value = it
         }
     }
 }

@@ -6,5 +6,21 @@
     <fragment
         android:id="@+id/magicFolderFragment"
         android:name="org.tahoe.lafs.ui.home.MagicFolderFragment"
-        android:label="MagicFolderFragment" />
+        android:label="MagicFolderFragment">
+        <action
+            android:id="@+id/toDetailsFragment"
+            app:destination="@id/directoryDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/directoryDetailFragment"
+        android:name="org.tahoe.lafs.ui.home.DirectoryDetailsFragment"
+        android:label="DirectoryDetailsFragment">
+        <argument
+            android:name="gridNode"
+            app:argType="org.tahoe.lafs.network.services.GridNode" />
+        <action
+            android:id="@+id/toDetailsFragment"
+            app:destination="@id/directoryDetailFragment" />
+    </fragment>
 </navigation>

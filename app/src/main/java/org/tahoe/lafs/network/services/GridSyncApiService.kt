@@ -7,5 +7,5 @@ import retrofit2.http.Url
 interface GridSyncApiService {
 
     @GET
-    suspend fun getMagicFolder(@Url url: String): JsonElement
+    suspend fun getFolderStructure(@Url url: String): JsonElement
 }

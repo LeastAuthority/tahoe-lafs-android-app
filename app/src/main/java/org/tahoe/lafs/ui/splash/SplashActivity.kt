@@ -10,9 +10,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.tahoe.lafs.R
 import org.tahoe.lafs.extension.get
 import org.tahoe.lafs.extension.showFullScreenOverStatusBar
-import org.tahoe.lafs.network.services.GridApiDataHandler.EMPTY
 import org.tahoe.lafs.ui.home.HomeActivity
 import org.tahoe.lafs.ui.onboarding.StartActivity
+import org.tahoe.lafs.utils.Constants.EMPTY
 import org.tahoe.lafs.utils.Constants.SPLASH_TIME_OUT
 import org.tahoe.lafs.utils.SharedPreferenceKeys
 import javax.inject.Inject

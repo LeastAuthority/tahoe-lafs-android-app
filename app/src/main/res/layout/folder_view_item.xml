@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_margin="@dimen/xsmall"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/xsmall">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtFolderName"
@@ -20,11 +20,11 @@
         style="@style/TextBlack.Body2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/xsmall"
-        android:layout_marginHorizontal="@dimen/small"
         android:layout_below="@+id/txtFolderName"
+        android:layout_marginHorizontal="@dimen/small"
         android:layout_toEndOf="@+id/imgFolder"
-        android:text="@string/file_size" />
+        android:paddingTop="@dimen/xsmall"
+        tools:text="10 files; 20 MB" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imgFolder"
@@ -36,6 +36,17 @@
         android:background="@android:color/transparent"
         android:contentDescription="@string/sync_content_description"
         android:src="@drawable/ic_folder" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnDownload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="@dimen/medium"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/sync_content_description"
+        android:src="@drawable/ic_download_file" />
 
     <View
         android:layout_width="match_parent"

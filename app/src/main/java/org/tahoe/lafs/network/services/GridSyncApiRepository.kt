@@ -10,8 +10,8 @@ class GridSyncApiRepository @Inject constructor(
     private val gridSyncApiService: GridSyncApiService
 ) : BaseRepository() {
 
-    suspend fun getMagicFolder(scanUrl: String): JsonElement {
+    suspend fun getFolderStructure(scanUrl: String): JsonElement {
         ensureInternetConnection()
-        return gridSyncApiService.getMagicFolder(scanUrl)
+        return gridSyncApiService.getFolderStructure(scanUrl)
     }
 }

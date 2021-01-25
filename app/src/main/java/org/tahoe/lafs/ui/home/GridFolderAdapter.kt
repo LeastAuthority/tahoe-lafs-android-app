@@ -3,10 +3,15 @@ package org.tahoe.lafs.ui.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import org.tahoe.lafs.R
+import org.tahoe.lafs.extension.getShortCollectiveFolderName
+import org.tahoe.lafs.extension.hide
+import org.tahoe.lafs.extension.show
 import org.tahoe.lafs.network.services.GridNode
 
 internal class GridFolderAdapter(
@@ -15,7 +20,10 @@ internal class GridFolderAdapter(
 ) :
     RecyclerView.Adapter<GridFolderAdapter.MagicFolderViewHolder>() {
     internal inner class MagicFolderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var txtFolderName: TextView = view.findViewById(R.id.txtFolderName)
+        var txtFolderName: AppCompatTextView = view.findViewById(R.id.txtFolderName)
+        var txtFolderDesc: AppCompatTextView = view.findViewById(R.id.txtFolderDesc)
+        var imgFolder: AppCompatImageView = view.findViewById(R.id.imgFolder)
+        var btnDownload: AppCompatImageButton = view.findViewById(R.id.btnDownload)
     }
 
     @NonNull
@@ -27,7 +35,18 @@ internal class GridFolderAdapter(
 
     override fun onBindViewHolder(holder: MagicFolderViewHolder, position: Int) {
         val node = nodesList[position]
-        holder.txtFolderName.text = node.name.replace("(collective)", "")
+        holder.txtFolderName.text = node.name.getShortCollectiveFolderName()
+
+        if (node.isDir) {
+            holder.imgFolder.setImageResource(R.drawable.ic_folder)
+            holder.btnDownload.hide()
+            //TODO: size for folder is not coming via API for now putting hard coded value
+            holder.txtFolderDesc.text = String.format("10 files; 20 MB")
+        } else {
+            holder.imgFolder.setImageResource(R.drawable.ic_file)
+            holder.txtFolderDesc.text = String.format("%d Bytes", node.size)
+            if (node.size > 0) holder.btnDownload.show() else holder.btnDownload.hide()
+        }
 
         holder.itemView.setOnClickListener {
             gridItemClickListener.onGridItemClickListener(node)
