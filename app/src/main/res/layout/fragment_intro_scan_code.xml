@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_background"
+    tools:context=".ui.onboarding.IntroScanCodeFragment">
+
+    <RelativeLayout
+        android:id="@+id/layoutIcons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="@dimen/xlarge"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgIconFirst"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/medium"
+            android:layout_toStartOf="@+id/imgIconSecond"
+            android:background="@drawable/ic_phone_android" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgIconSecond"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_swap_horizontal" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgIconThird"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium"
+            android:layout_toEndOf="@+id/imgIconSecond"
+            android:background="@drawable/ic_laptop_mac" />
+
+    </RelativeLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtHeading"
+        style="@style/TextWhite.H3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginHorizontal="@dimen/large"
+        android:layout_marginTop="@dimen/xxxlarge"
+        android:gravity="center"
+        android:text="@string/connect_your_device" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtBody"
+        style="@style/TextWhite.Body2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutIcons"
+        android:layout_marginHorizontal="@dimen/large"
+        android:layout_marginTop="@dimen/xxlarge"
+        android:gravity="center"
+        android:text="@string/intro_scan_code_body" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnScanQrCode"
+        style="@style/TextWhite.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="@dimen/xxlarge"
+        android:layout_marginBottom="@dimen/xlarge"
+        android:height="@dimen/button_size"
+        android:background="@drawable/rounded_corners_button"
+        android:text="@string/scan_qr_code"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="xsmall">4dp</dimen>
+    <dimen name="small">8dp</dimen>
+    <dimen name="medium">16dp</dimen>
+    <dimen name="xmedium">24dp</dimen>
+    <dimen name="large">32dp</dimen>
+    <dimen name="xlarge">48dp</dimen>
+    <dimen name="xxlarge">64dp</dimen>
+    <dimen name="xxxlarge">96dp</dimen>
+
+    <dimen name="app_bar_height">64dp</dimen>
+    <dimen name="one_dp">1dp</dimen>
+    <dimen name="zero_dp">0dp</dimen>
+
+    <dimen name="button_size">57dp</dimen>
+    <dimen name="nav_header_height">195dp</dimen>
+    <dimen name="action_bar_size">58dp</dimen>
+</resources>

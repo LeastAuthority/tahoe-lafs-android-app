@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/xsmall">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtFolderName"
+        style="@style/TextBlack.SubTitle1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/small"
+        android:layout_toEndOf="@+id/imgFolder"
+        android:paddingTop="@dimen/small"
+        tools:text="Demo Grid" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtFolderDesc"
+        style="@style/TextBlack.Body2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtFolderName"
+        android:layout_marginHorizontal="@dimen/small"
+        android:layout_toEndOf="@+id/imgFolder"
+        android:paddingTop="@dimen/xsmall"
+        tools:text="10 files; 20 MB" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgFolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="@dimen/medium"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/sync_content_description"
+        android:src="@drawable/ic_folder" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnDownload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="@dimen/medium"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/sync_content_description"
+        android:src="@drawable/ic_download_file" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one_dp"
+        android:layout_below="@+id/txtFolderDesc"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="@dimen/medium"
+        android:layout_toEndOf="@+id/imgFolder"
+        android:background="@color/gray" />
+</RelativeLayout>

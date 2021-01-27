@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/disconnect"
+            android:icon="@drawable/ic_side_item"
+            android:title="@string/disconnect_menu" />
+        <item
+            android:id="@+id/scanCode"
+            android:icon="@drawable/ic_side_item"
+            android:title="@string/scan_qr_code_menu" />
+        <item
+            android:id="@+id/testItem1"
+            android:icon="@drawable/ic_side_item"
+            android:title="@string/body_text" />
+        <item
+            android:id="@+id/testItem2"
+            android:icon="@drawable/ic_side_item"
+            android:title="@string/body_text" />
+    </group>
+
+</menu>

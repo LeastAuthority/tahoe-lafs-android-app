@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/nav_header_height"
+    android:background="@color/white"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgAvatar"
+        android:layout_width="@dimen/xxlarge"
+        android:layout_height="@dimen/xxlarge"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginHorizontal="@dimen/medium"
+        android:layout_marginTop="@dimen/xlarge"
+        android:contentDescription="@string/nav_header_desc"
+        app:srcCompat="@drawable/ic_avatar" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtTitle"
+        style="@style/TextBlack.H6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgAvatar"
+        android:layout_alignParentStart="true"
+        android:layout_marginHorizontal="@dimen/medium"
+        android:layout_marginTop="@dimen/medium"
+        android:text="@string/demo_grid"
+        tools:text="Demo Grid" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtGatewayDetails"
+        style="@style/TextBlack.Body2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtTitle"
+        android:layout_alignParentStart="true"
+        android:layout_marginHorizontal="@dimen/medium"
+        android:text="@string/connected_gateway_placeholder"
+        tools:text="Connected via gateway 192.168.1.5" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one_dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/gray" />
+
+</RelativeLayout>

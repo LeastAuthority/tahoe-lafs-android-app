@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_background"
+    tools:context=".ui.onboarding.IntroFragment">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/ic_splash_icon" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtHeading"
+        style="@style/TextWhite.H2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/xxxlarge"
+        android:gravity="center"
+        android:text="@string/welcome" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtBody"
+        style="@style/TextWhite.Body2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgIcon"
+        android:layout_marginHorizontal="@dimen/xxlarge"
+        android:layout_marginTop="@dimen/xxlarge"
+        android:gravity="center"
+        android:text="@string/intro_body" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnGetStarted"
+        style="@style/TextWhite.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="@dimen/xxlarge"
+        android:layout_marginBottom="@dimen/xlarge"
+        android:height="@dimen/button_size"
+        android:background="@drawable/rounded_corners_button"
+        android:text="@string/get_started"
+        android:textColor="@color/white" />
+
+</RelativeLayout>
