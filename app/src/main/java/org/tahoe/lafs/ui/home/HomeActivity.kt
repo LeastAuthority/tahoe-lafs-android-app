@@ -17,12 +17,11 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
 import org.greenrobot.eventbus.EventBus
 import org.tahoe.lafs.R
-import org.tahoe.lafs.extension.remove
+import org.tahoe.lafs.extension.clearGridData
 import org.tahoe.lafs.extension.showFullScreenOverStatusBar
 import org.tahoe.lafs.ui.onboarding.StartActivity
 import org.tahoe.lafs.ui.onboarding.StartActivity.Companion.SCANNER_FRAGMENT
 import org.tahoe.lafs.ui.onboarding.StartActivity.Companion.START_FRAGMENT
-import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_URL
 import javax.inject.Inject
 
 
@@ -141,8 +140,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.disconnect -> {
+                preferences.clearGridData()
+                
                 // Handle disconnect
-                preferences.remove(SCANNER_URL)
                 val intent = Intent(this, StartActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(0, 0)
@@ -150,7 +150,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.scanCode -> {
-                preferences.remove(SCANNER_URL)
+                preferences.clearGridData()
+
+                // Redirect to scan code again
                 val intent = Intent(this, StartActivity::class.java)
                 intent.putExtra(START_FRAGMENT, SCANNER_FRAGMENT)
                 startActivity(intent)

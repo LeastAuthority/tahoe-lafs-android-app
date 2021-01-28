@@ -36,8 +36,15 @@ abstract class BaseFragment : Fragment() {
         return rootView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        errorLayout.hide()
+        contentFrame.show()
+    }
+
     protected open fun showLoadingScreen() {
         progressBar.show()
+        errorLayout.hide()
         // disable touch for screen when loading is shown
         requireActivity().window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -47,14 +54,15 @@ abstract class BaseFragment : Fragment() {
 
     protected open fun showContent() {
         stopLoading()
+        errorLayout.hide()
         contentFrame.show()
         // enable the touch when content shown
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
-    protected fun showError(message: String) {
+    protected fun showError() {
         stopLoading()
-        //TODO: Show Error Dialog here if needed
+        errorLayout.show()
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
@@ -76,6 +84,26 @@ abstract class BaseFragment : Fragment() {
                 permissionGranted = false
                 requestPermissions(
                     arrayOf(Manifest.permission.CAMERA),
+                    RC_PERMISSION
+                )
+            } else {
+                permissionGranted = true
+            }
+        } else {
+            permissionGranted = true
+        }
+    }
+
+    protected fun checkStoragePermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissionGranted = false
+                requestPermissions(
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                     RC_PERMISSION
                 )
             } else {

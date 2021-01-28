@@ -1,12 +1,18 @@
 package org.tahoe.lafs.extension
 
+import android.content.Context
+import org.tahoe.lafs.R
 import org.tahoe.lafs.utils.Constants.COLLECTIVE_TEXT
 import org.tahoe.lafs.utils.Constants.EMPTY
+import org.tahoe.lafs.utils.Constants.ONE_DAY
+import org.tahoe.lafs.utils.Constants.ONE_HOUR
+import org.tahoe.lafs.utils.Constants.ONE_MINUTE
 import org.tahoe.lafs.utils.Constants.SUBFOLDER_SUFFIX
 import org.tahoe.lafs.utils.Constants.TYPE_JSON
 import org.tahoe.lafs.utils.Constants.URI_SCHEMA
 import timber.log.Timber
 import java.net.URL
+import java.util.*
 
 /**
  * Any generic extension functions which are not part of the core ktx libraries can be
@@ -17,6 +23,8 @@ fun String.getShortCollectiveFolderName(): String {
     val modifiedString = this.replace(COLLECTIVE_TEXT, EMPTY)
     if (modifiedString.endsWith(SUBFOLDER_SUFFIX, true)) {
         return modifiedString.replace(SUBFOLDER_SUFFIX, EMPTY)
+    } else if (modifiedString.contains(SUBFOLDER_SUFFIX, true)) {
+        return modifiedString.split(SUBFOLDER_SUFFIX)[1]
     }
     return modifiedString
 }
@@ -50,3 +58,24 @@ fun String.getEndPointIp(): String {
 }
 
 fun String.formattedFolderUrl() = this.replace(" ", URI_SCHEMA).plus(TYPE_JSON)
+
+fun Long.getLastUpdatedText(context: Context): String {
+    val lastUpdatedTime = Date().time - this
+
+    return if (lastUpdatedTime < ONE_MINUTE) {
+        context.getString(R.string.last_updated_just_now)
+    } else if (lastUpdatedTime in ONE_MINUTE until ONE_HOUR) {
+        val minutes = lastUpdatedTime / ONE_MINUTE
+        context.resources.getQuantityString(
+            R.plurals.last_updated_minutes_text,
+            minutes.toInt(),
+            minutes
+        )
+    } else if (lastUpdatedTime in ONE_HOUR until ONE_DAY) {
+        val hours = lastUpdatedTime / ONE_HOUR
+        context.resources.getQuantityString(R.plurals.last_updated_hours_text, hours.toInt(), hours)
+    } else {
+        val days = lastUpdatedTime / ONE_DAY
+        context.resources.getQuantityString(R.plurals.last_updated_days_text, days.toInt(), days)
+    }
+}

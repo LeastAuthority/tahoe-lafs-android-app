@@ -1,6 +1,7 @@
 package org.tahoe.lafs.ui.home
 
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -11,23 +12,23 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_detail.*
+import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.tahoe.lafs.R
-import org.tahoe.lafs.extension.get
-import org.tahoe.lafs.extension.getBaseUrl
-import org.tahoe.lafs.extension.getShortCollectiveFolderName
+import org.tahoe.lafs.extension.*
 import org.tahoe.lafs.network.base.Resource
-import org.tahoe.lafs.network.services.GridApiDataHandler
 import org.tahoe.lafs.network.services.GridNode
 import org.tahoe.lafs.ui.base.BaseFragment
 import org.tahoe.lafs.ui.viewmodel.GetFileStructureViewModel
+import org.tahoe.lafs.utils.Constants
 import org.tahoe.lafs.utils.Constants.EMPTY
-import org.tahoe.lafs.utils.Constants.TYPE_JSON
-import org.tahoe.lafs.utils.Constants.URI_SCHEMA
+import org.tahoe.lafs.utils.FileUtils
+import org.tahoe.lafs.utils.SharedPreferenceKeys
 import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_URL
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -41,6 +42,7 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
     private lateinit var gridFolderAdapter: GridFolderAdapter
     private lateinit var gridNode: GridNode
     private lateinit var scannedUrl: String
+    private var selectedGridNode: GridNode? = null
 
     override fun getLayoutId() = R.layout.fragment_detail
 
@@ -72,57 +74,74 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
         (activity as HomeActivity).showBackButton()
         (activity as HomeActivity).setToolbarText(
             gridNode.name.getShortCollectiveFolderName(),
-            "Last updated: Just Now"
+            preferences.getLong(SharedPreferenceKeys.GRID_SYNC_TIMESTAMP, Date().time)
+                .getLastUpdatedText(requireContext())
         )
-        getFileStructureViewModel.getFolderStructure(scannedUrl.getBaseUrl() + URI_SCHEMA + gridNode.roUri + TYPE_JSON)
+
+        if (gridNode.filesList.isNotEmpty()) {
+            gridFolderAdapter =
+                GridFolderAdapter(
+                    gridNode.filesList.sortedWith(
+                        compareBy({ !it.isDir },
+                            { it.name })
+                    ), this
+                )
+            recyclerView.adapter = gridFolderAdapter
+        }
     }
 
     private fun initListeners() {
-        getFileStructureViewModel.folderStructure.observe(viewLifecycleOwner, { resource ->
+        getFileStructureViewModel.filesData.observe(viewLifecycleOwner, { resource ->
             when (resource) {
                 is Resource.Loading -> showLoadingScreen()
 
                 is Resource.Failure -> {
                     showContent()
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.something_went_wrong),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showError()
                 }
 
                 is Resource.Success -> {
                     showContent()
-                    Timber.d("JSON element for directory folder = ${resource.data}")
-                    GridApiDataHandler.getAdminNodeFromROUriData(resource.data)?.let { adminNode ->
-                        getFileStructureViewModel.getAdminFolderStructure(scannedUrl.getBaseUrl() + URI_SCHEMA + adminNode.roUri + TYPE_JSON)
-                    }
+                    Timber.d("JSON element for Magic folder = ${resource.data}")
+                    //TODO: Find specific node and display data here
                 }
             }
         })
 
-        getFileStructureViewModel.adminFolderStructure.observe(viewLifecycleOwner, { resource ->
+        getFileStructureViewModel.fileData.observe(viewLifecycleOwner, { resource ->
             when (resource) {
-                is Resource.Loading -> showLoadingScreen()
-
-                is Resource.Failure -> {
-                    showContent()
+                is Resource.Loading -> {
                     Toast.makeText(
                         requireContext(),
-                        getString(R.string.something_went_wrong),
+                        getString(R.string.download_started),
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                }
+
+                is Resource.Failure -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.download_failed),
                         Toast.LENGTH_LONG
                     ).show()
                 }
 
                 is Resource.Success -> {
                     showContent()
-                    Timber.d("JSON element for admin directory folder = ${resource.data}")
-                    val nodesList = GridApiDataHandler.getFilesAndFoldersList(resource.data)
-                        .filter { !it.deleted }
-                    if (nodesList.isNotEmpty()) {
-                        gridFolderAdapter = GridFolderAdapter(nodesList, this)
-                        recyclerView.adapter = gridFolderAdapter
+                    if (FileUtils.checkSDCardStatus()) {
+                        val writtenToDisk: Boolean = writeResponseBodyToDisk(resource.data)
+                        Timber.d("file download was a success? $writtenToDisk")
+
+                        if(writtenToDisk){
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.download_successfully),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
+
                 }
             }
         })
@@ -130,14 +149,57 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRefreshEvent(refreshDataEvent: RefreshDataEvent) {
-        getFileStructureViewModel.getFolderStructure(scannedUrl.getBaseUrl() + URI_SCHEMA + gridNode.roUri + TYPE_JSON)
+        getFileStructureViewModel.getAllFilesAndFolders(scannedUrl)
     }
 
     override fun onGridItemClickListener(gridNode: GridNode) {
         Timber.d("Selected Node $gridNode")
-        if (gridNode.isDir) {
+        if (gridNode.isDir && gridNode.filesList.isNotEmpty()) {
             val directions = DirectoryDetailsFragmentDirections.toDetailsFragment(gridNode)
-            findNavController().navigate(directions)
+            findNavController().navigateWithAnim(directions)
+        }
+    }
+
+    override fun onDownloadItemClickListener(gridNode: GridNode) {
+        if (gridNode.roUri.isNotEmpty()) {
+            selectedGridNode = gridNode
+
+            checkStoragePermissions()
+
+            if (permissionGranted) {
+                getFileStructureViewModel.downloadFile(scannedUrl.getBaseUrl() + Constants.URI_SCHEMA + gridNode.roUri)
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.grant_download_permission),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    private fun writeResponseBodyToDisk(body: ResponseBody): Boolean {
+        selectedGridNode?.name?.let { fileName ->
+            FileUtils.saveFile(
+                body,
+                FileUtils.createOrGetFile(
+                    fileName,
+                    FileUtils.getFolderName(requireContext())
+                ).absolutePath
+            )
+            return true
+        }
+        return false
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == RC_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getFileStructureViewModel.downloadFile(scannedUrl.getBaseUrl() + Constants.URI_SCHEMA + selectedGridNode?.roUri)
+            }
         }
     }
 }

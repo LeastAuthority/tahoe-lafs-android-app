@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical|center_horizontal"
@@ -16,6 +17,34 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/progress"
         android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/errorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageErrorIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/medium"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/txtError"
+            android:src="@drawable/ic_warning"
+            app:tint="@color/purple_700" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtError"
+            style="@style/TextBlack.Error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginHorizontal="@dimen/medium"
+            android:gravity="center"
+            android:text="@string/something_went_wrong"
+            android:textColor="@color/purple_700" />
+    </RelativeLayout>
 
 </FrameLayout>
