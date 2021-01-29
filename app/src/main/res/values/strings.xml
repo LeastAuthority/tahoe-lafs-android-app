@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tahoe Lafs</string>
+    <string name="app_name">Tahoe-LAFS</string>
     <string name="welcome">Welcome</string>
     <string name="intro_body">To get started:\n1. Start Gridsync on your computer\n2. Make sure your mobile device is connected to the same local network as the computer where you’re running Gridsync</string>
     <string name="get_started">GET STARTED</string>
@@ -17,8 +17,8 @@
     <string name="sync_content_description">Sync button</string>
     <string name="something_went_wrong">We are unable to sync data with Grid. Please try again later.</string>
     <string name="last_updated_just_now">Last updated: Just now</string>
-    <string name="download_started">File download started...</string>
-    <string name="download_failed">Download Failed.</string>
+    <string name="download_started">   File download started…   </string>
+    <string name="download_failed">   Download Failed.   </string>
     <string name="grant_download_permission">Please grant write access to save files.</string>
-    <string name="download_successfully">File downloaded successfully.</string>
+    <string name="download_successfully">   File downloaded successfully.   </string>
 </resources>

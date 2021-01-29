@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.fragment_base.view.*
 import org.tahoe.lafs.R
 import org.tahoe.lafs.extension.hide
 import org.tahoe.lafs.extension.show
+import org.tahoe.lafs.ui.customview.TahoeToast
+
 
 abstract class BaseFragment : Fragment() {
 
@@ -112,5 +114,15 @@ abstract class BaseFragment : Fragment() {
         } else {
             permissionGranted = true
         }
+    }
+
+    protected fun showToast(title: String, type: Int) {
+        TahoeToast.makeText(
+            context,
+            title,
+            TahoeToast.LENGTH_LONG,
+            type,
+            TahoeToast.POSITION_DEFAULT
+        ).show();
     }
 }

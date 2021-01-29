@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -21,6 +20,7 @@ import org.tahoe.lafs.extension.*
 import org.tahoe.lafs.network.base.Resource
 import org.tahoe.lafs.network.services.GridNode
 import org.tahoe.lafs.ui.base.BaseFragment
+import org.tahoe.lafs.ui.customview.TahoeToast.*
 import org.tahoe.lafs.ui.viewmodel.GetFileStructureViewModel
 import org.tahoe.lafs.utils.Constants
 import org.tahoe.lafs.utils.Constants.EMPTY
@@ -111,20 +111,11 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
         getFileStructureViewModel.fileData.observe(viewLifecycleOwner, { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.download_started),
-                        Toast.LENGTH_LONG
-                    ).show()
-
+                    showToast(getString(R.string.download_started), INFORMATION)
                 }
 
                 is Resource.Failure -> {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.download_failed),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showToast(getString(R.string.download_failed), ERROR)
                 }
 
                 is Resource.Success -> {
@@ -133,15 +124,12 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
                         val writtenToDisk: Boolean = writeResponseBodyToDisk(resource.data)
                         Timber.d("file download was a success? $writtenToDisk")
 
-                        if(writtenToDisk){
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.download_successfully),
-                                Toast.LENGTH_LONG
-                            ).show()
+                        if (writtenToDisk) {
+                            showToast(getString(R.string.download_successfully), SUCCESS)
                         }
+                    } else {
+                        showToast(getString(R.string.download_failed), ERROR)
                     }
-
                 }
             }
         })
@@ -168,12 +156,6 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
 
             if (permissionGranted) {
                 getFileStructureViewModel.downloadFile(scannedUrl.getBaseUrl() + Constants.URI_SCHEMA + gridNode.roUri)
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.grant_download_permission),
-                    Toast.LENGTH_LONG
-                ).show()
             }
         }
     }

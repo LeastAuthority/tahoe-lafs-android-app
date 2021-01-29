@@ -28,6 +28,7 @@ object FileUtils {
 
     fun createOrGetFile(fileName: String, folderName: String): File {
         val file = File(folderName, fileName)
+        Timber.d("Saving file at ${file.absolutePath}")
 
         if (!file.parentFile.exists())
             file.parentFile.mkdirs()
@@ -51,6 +52,7 @@ object FileUtils {
                 while (input.read(buffer).also { read = it } != -1) {
                     output.write(buffer, 0, read)
                 }
+                Timber.d("File data saved at $filePath")
                 output.flush()
             }
             return filePath
