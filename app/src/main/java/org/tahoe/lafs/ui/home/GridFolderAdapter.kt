@@ -40,8 +40,7 @@ internal class GridFolderAdapter(
         if (node.isDir) {
             holder.imgFolder.setImageResource(R.drawable.ic_folder)
             holder.btnDownload.hide()
-            //TODO: size for folder is not coming via API for now putting hard coded value
-            holder.txtFolderDesc.text = String.format("10 files; 20 MB")
+            holder.txtFolderDesc.text = node.getFormattedDescription()
         } else {
             holder.imgFolder.setImageResource(R.drawable.ic_file)
             holder.txtFolderDesc.text = String.format("%d Bytes", node.size)
@@ -50,6 +49,10 @@ internal class GridFolderAdapter(
 
         holder.itemView.setOnClickListener {
             gridItemClickListener.onGridItemClickListener(node)
+        }
+
+        holder.btnDownload.setOnClickListener {
+            gridItemClickListener.onDownloadItemClickListener(node)
         }
     }
 
@@ -60,4 +63,5 @@ internal class GridFolderAdapter(
 
 interface GridItemClickListener {
     fun onGridItemClickListener(gridNode: GridNode)
+    fun onDownloadItemClickListener(gridNode: GridNode)
 }

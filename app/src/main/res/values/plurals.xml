@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="last_updated_minutes_text">
+        <item quantity="one">Last updated: %d minute ago</item>
+        <item quantity="other">Last updated: %d minutes ago</item>
+    </plurals>
+    <plurals name="last_updated_hours_text">
+        <item quantity="one">Last updated: %d hour ago</item>
+        <item quantity="other">Last updated: %d hours ago</item>
+    </plurals>
+    <plurals name="last_updated_days_text">
+        <item quantity="one">Last updated: %d day ago</item>
+        <item quantity="other">Last updated: %d days ago</item>
+    </plurals>
+</resources>

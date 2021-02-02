@@ -81,6 +81,12 @@
         <item name="lineHeight">24sp</item>
     </style>
 
+    <style name="TextBlack.Error">
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">20sp</item>
+        <item name="lineHeight">30sp</item>
+    </style>
+
     <style name="TextWhite.Button">
         <item name="fontFamily">@font/roboto_medium</item>
         <item name="android:textSize">14sp</item>

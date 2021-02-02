@@ -1,6 +1,7 @@
 package org.tahoe.lafs.extension
 
 import android.content.SharedPreferences
+import org.tahoe.lafs.utils.SharedPreferenceKeys
 
 inline fun <reified T : Any> SharedPreferences.get(key: String, defaultValue: T? = null): T {
     return when (T::class) {
@@ -43,3 +44,9 @@ fun SharedPreferences.commit() = edit().commit()
 fun SharedPreferences.remove(key: String) = edit().remove(key).apply()
 
 fun SharedPreferences.clear() = edit().clear().apply()
+
+fun SharedPreferences.clearGridData() {
+    remove(SharedPreferenceKeys.SCANNER_URL)
+    remove(SharedPreferenceKeys.GRID_DATA)
+    remove(SharedPreferenceKeys.GRID_SYNC_TIMESTAMP)
+}

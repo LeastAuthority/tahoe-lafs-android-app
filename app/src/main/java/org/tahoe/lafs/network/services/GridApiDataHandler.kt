@@ -1,12 +1,21 @@
 package org.tahoe.lafs.network.services
 
+import android.content.SharedPreferences
+import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
+import org.tahoe.lafs.extension.set
 import org.tahoe.lafs.utils.Constants.ADMIN_NODE
 import org.tahoe.lafs.utils.Constants.DIR_NODE
 import org.tahoe.lafs.utils.Constants.EMPTY
 import org.tahoe.lafs.utils.Constants.PERSONAL_TEXT
+import org.tahoe.lafs.utils.Constants.RO_DIR_VALUE
+import org.tahoe.lafs.utils.SharedPreferenceKeys.GRID_DATA
+import org.tahoe.lafs.utils.SharedPreferenceKeys.GRID_SYNC_TIMESTAMP
 import timber.log.Timber
+import java.lang.reflect.Type
+
 
 object GridApiDataHandler {
 
@@ -86,7 +95,7 @@ object GridApiDataHandler {
                 linkCrTime = linkCrTime,
                 mutable = mutable,
                 name = key,
-                isDir = dirOrFileNode == DIR_NODE,
+                isDir = dirOrFileNode == DIR_NODE || roUri.contains(RO_DIR_VALUE),
                 size = size,
                 deleted = deleted,
                 lastDownloadedTimestamp = lastDownloadTime,
@@ -176,5 +185,45 @@ object GridApiDataHandler {
             }
         }
         return nodesList
+    }
+
+    fun arrangeFilesAndSubFolders(filesFolderNodes: List<GridNode>): MutableList<GridNode> {
+        val arrangedList: MutableList<GridNode> = mutableListOf()
+
+        //get list of all directories & files
+        val directories: List<GridNode> = filesFolderNodes.filter { it.isDir }
+        val files: List<GridNode> = filesFolderNodes.filter { !it.isDir }
+        for (file in files) {
+            var isDirectoryFound = false
+            for (directory in directories) {
+                if (file.name.contains(directory.name)) {
+                    directory.filesList.add(file)
+                    isDirectoryFound = true
+                    break
+                }
+            }
+
+            if (!isDirectoryFound) {
+                arrangedList.add(file)
+            }
+        }
+
+        arrangedList.addAll(directories)
+        return arrangedList
+    }
+
+    fun saveGridData(gridList: List<GridNode>, preferences: SharedPreferences) {
+        preferences.set(GRID_DATA, Gson().toJson(gridList))
+        preferences.set(GRID_SYNC_TIMESTAMP, System.currentTimeMillis())
+    }
+
+    fun getGridData(preferences: SharedPreferences): List<GridNode> {
+        val jsonData = preferences.getString(GRID_DATA, EMPTY)
+        val type: Type = object : TypeToken<List<GridNode>>() {}.type
+
+        if (jsonData != null && jsonData.isNotEmpty()) {
+            return Gson().fromJson(jsonData, type)
+        }
+        return emptyList()
     }
 }

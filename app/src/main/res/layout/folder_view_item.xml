@@ -43,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
+        android:padding="@dimen/small"
         android:layout_marginHorizontal="@dimen/medium"
         android:background="@android:color/transparent"
         android:contentDescription="@string/sync_content_description"
