@@ -104,6 +104,11 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
                     showContent()
                     Timber.d("JSON element for Magic folder = ${resource.data}")
                     //TODO: Find specific node and display data here
+                    (activity as HomeActivity).setToolbarText(
+                        gridNode.name.getShortCollectiveFolderName(),
+                        preferences.getLong(SharedPreferenceKeys.GRID_SYNC_TIMESTAMP, Date().time)
+                            .getLastUpdatedText(requireContext())
+                    )
                 }
             }
         })

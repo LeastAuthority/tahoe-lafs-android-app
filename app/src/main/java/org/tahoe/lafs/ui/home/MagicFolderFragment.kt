@@ -39,6 +39,7 @@ class MagicFolderFragment : BaseFragment(), GridItemClickListener {
     private val getFileStructureViewModel: GetFileStructureViewModel by viewModels()
     private lateinit var gridFolderAdapter: GridFolderAdapter
     private lateinit var scannedUrl: String
+    private var isDataLoaded = false
 
     override fun getLayoutId() = R.layout.fragment_magic_folder
 
@@ -47,6 +48,28 @@ class MagicFolderFragment : BaseFragment(), GridItemClickListener {
         scannedUrl = preferences.get(SCANNER_URL, EMPTY)
         initView()
         initListeners()
+
+        savedInstanceState?.getBoolean("IS_DATA_LOADED")?.let {
+            isDataLoaded = it
+        }
+
+        if (!isDataLoaded) {
+            loadData()
+        } else {
+            val gridNodes = GridApiDataHandler.getGridData(preferences)
+            if (gridNodes.isNotEmpty()) {
+                gridFolderAdapter =
+                    GridFolderAdapter(gridNodes.sortedByDescending { it.isDir }
+                        .sortedBy { it.name }, this)
+                recyclerView.adapter = gridFolderAdapter
+            }
+        }
+    }
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("IS_DATA_LOADED", isDataLoaded)
     }
 
     override fun onStart() {
@@ -71,20 +94,10 @@ class MagicFolderFragment : BaseFragment(), GridItemClickListener {
                 .getLastUpdatedText(requireContext())
         )
         (activity as HomeActivity).setNavigationViewDetails(scannedUrl.getEndPointIp())
-
-        loadData()
     }
 
     private fun loadData() {
-        val gridNodes = GridApiDataHandler.getGridData(preferences)
-        if (gridNodes.isNotEmpty()) {
-            gridFolderAdapter =
-                GridFolderAdapter(gridNodes.sortedByDescending { it.isDir }
-                    .sortedBy { it.name }, this)
-            recyclerView.adapter = gridFolderAdapter
-        } else {
-            getFileStructureViewModel.getAllFilesAndFolders(scannedUrl)
-        }
+        getFileStructureViewModel.getAllFilesAndFolders(scannedUrl)
     }
 
     private fun initListeners() {
@@ -94,11 +107,29 @@ class MagicFolderFragment : BaseFragment(), GridItemClickListener {
 
                 is Resource.Failure -> {
                     showContent()
-                    showError()
+
+                    val gridNodes = GridApiDataHandler.getGridData(preferences)
+                    if (gridNodes.isNotEmpty()) {
+                        gridFolderAdapter =
+                            GridFolderAdapter(gridNodes.sortedByDescending { it.isDir }
+                                .sortedBy { it.name }, this)
+                        recyclerView.adapter = gridFolderAdapter
+                    } else {
+                        showError()
+                    }
                 }
 
                 is Resource.Success -> {
                     showContent()
+
+                    isDataLoaded = true
+
+                    (activity as HomeActivity).setToolbarText(
+                        "Demo Grid",
+                        preferences.getLong(GRID_SYNC_TIMESTAMP, Date().time)
+                            .getLastUpdatedText(requireContext())
+                    )
+
                     Timber.d("JSON element for Magic folder = ${resource.data}")
                     val allFoldersList = resource.data
 

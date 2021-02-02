@@ -10,10 +10,7 @@ import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import org.tahoe.lafs.extension.formattedFolderUrl
 import org.tahoe.lafs.extension.getBaseUrl
-import org.tahoe.lafs.network.base.BaseError
-import org.tahoe.lafs.network.base.BaseViewModel
-import org.tahoe.lafs.network.base.FailureStatusCode
-import org.tahoe.lafs.network.base.Resource
+import org.tahoe.lafs.network.base.*
 import org.tahoe.lafs.network.services.GridApiDataHandler
 import org.tahoe.lafs.network.services.GridNode
 import org.tahoe.lafs.network.services.GridSyncApiRepository
@@ -28,8 +25,8 @@ class GetFileStructureViewModel @ViewModelInject constructor(
     private val _filesData = MutableLiveData<Resource<List<GridNode>>>()
     val filesData: MutableLiveData<Resource<List<GridNode>>> = _filesData
 
-    private val _fileData = MutableLiveData<Resource<ResponseBody>>()
-    val fileData: MutableLiveData<Resource<ResponseBody>> = _fileData
+    private val _fileData = SingleLiveEvent<Resource<ResponseBody>>()
+    val fileData: SingleLiveEvent<Resource<ResponseBody>> = _fileData
 
     fun getAllFilesAndFolders(url: String) {
         viewModelScope.launch {
