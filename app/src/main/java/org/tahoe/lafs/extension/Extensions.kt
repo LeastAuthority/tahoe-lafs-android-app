@@ -21,10 +21,16 @@ import java.util.*
 
 fun String.getShortCollectiveFolderName(): String {
     val modifiedString = this.replace(COLLECTIVE_TEXT, EMPTY)
-    if (modifiedString.endsWith(SUBFOLDER_SUFFIX, true)) {
-        return modifiedString.replace(SUBFOLDER_SUFFIX, EMPTY)
-    } else if (modifiedString.contains(SUBFOLDER_SUFFIX, true)) {
-        return modifiedString.split(SUBFOLDER_SUFFIX)[1]
+    if (modifiedString.contains(SUBFOLDER_SUFFIX, true)) {
+        val list = modifiedString.split(SUBFOLDER_SUFFIX)
+        if (list.count() > 2) {
+            if (list[list.count() - 1] == EMPTY) {
+                return list[list.count() - 2]
+            } else {
+                return list[list.count() - 1]
+            }
+        } else if (list.count() == 2)
+            return list[0]
     }
     return modifiedString
 }

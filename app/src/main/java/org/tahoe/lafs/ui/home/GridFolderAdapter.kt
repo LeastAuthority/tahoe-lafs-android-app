@@ -43,7 +43,7 @@ internal class GridFolderAdapter(
             holder.txtFolderDesc.text = node.getFormattedDescription()
         } else {
             holder.imgFolder.setImageResource(R.drawable.ic_file)
-            holder.txtFolderDesc.text = String.format("%d Bytes", node.size)
+            holder.txtFolderDesc.text = node.getFormattedFileSize()
             if (node.size > 0) holder.btnDownload.show() else holder.btnDownload.hide()
         }
 
