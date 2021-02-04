@@ -2,6 +2,8 @@ package org.tahoe.lafs.network.services
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import org.tahoe.lafs.utils.Constants.EMPTY
+import org.tahoe.lafs.utils.Constants.SUBFOLDER_SUFFIX
 import java.text.DecimalFormat
 import kotlin.math.log10
 import kotlin.math.pow
@@ -35,6 +37,7 @@ data class GridNode(
     val deleted: Boolean = false,
     val lastDownloadedTimestamp: Double = 0.0,
     val format: String = CHK,
+    var parentName: String = EMPTY,
     var filesList: MutableList<GridNode> = mutableListOf()
 
 ) : Parcelable {
@@ -49,6 +52,8 @@ data class GridNode(
             return readableFileSize(size)
         }
     }
+
+    fun getFormattedFileSize() = readableFileSize(size)
 
     private fun getAllFilesSize(filesList: MutableList<GridNode>): Long {
         return if (filesList.isEmpty()) {
@@ -69,4 +74,6 @@ data class GridNode(
         return DecimalFormat("#,##0.#").format(size / 1000.0.pow(digitGroups.toDouble()))
             .toString() + " " + units[digitGroups]
     }
+
+    fun isRootLevelDirectory() = name.endsWith(SUBFOLDER_SUFFIX)
 }

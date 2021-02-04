@@ -10,6 +10,7 @@
         style="@style/TextBlack.SubTitle1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/btnDownload"
         android:layout_marginHorizontal="@dimen/small"
         android:layout_toEndOf="@+id/imgFolder"
         android:paddingTop="@dimen/small"
@@ -44,7 +45,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:padding="@dimen/small"
-        android:layout_marginHorizontal="@dimen/medium"
+        android:layout_marginHorizontal="@dimen/small"
         android:background="@android:color/transparent"
         android:contentDescription="@string/sync_content_description"
         android:src="@drawable/ic_download_file" />

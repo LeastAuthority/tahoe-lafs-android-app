@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import org.tahoe.lafs.extension.formattedFolderUrl
 import org.tahoe.lafs.extension.getBaseUrl
+import org.tahoe.lafs.extension.getShortCollectiveFolderName
 import org.tahoe.lafs.network.base.*
 import org.tahoe.lafs.network.services.GridApiDataHandler
 import org.tahoe.lafs.network.services.GridNode
@@ -56,7 +57,10 @@ class GetFileStructureViewModel @ViewModelInject constructor(
                             GridApiDataHandler.getFilesAndFoldersList(filesFolderRequest.await())
 
                         gridNode.filesList =
-                            GridApiDataHandler.arrangeFilesAndSubFolders(filesFolderNodes)
+                            GridApiDataHandler.arrangeFilesAndSubFolders(
+                                filesFolderNodes,
+                                gridNode.name.getShortCollectiveFolderName()
+                            )
 
                         GridApiDataHandler.saveGridData(gridNodes, preferences)
                     }

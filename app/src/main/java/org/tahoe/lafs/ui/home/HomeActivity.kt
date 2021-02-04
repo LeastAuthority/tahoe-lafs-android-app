@@ -75,6 +75,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else if (backStackEntryCount > 0) {
             navHostFragment?.childFragmentManager?.popBackStack()
         } else {
+            finish()
             super.onBackPressed()
         }
     }

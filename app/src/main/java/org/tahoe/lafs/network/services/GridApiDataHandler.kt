@@ -5,12 +5,14 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import org.tahoe.lafs.extension.getShortCollectiveFolderName
 import org.tahoe.lafs.extension.set
 import org.tahoe.lafs.utils.Constants.ADMIN_NODE
 import org.tahoe.lafs.utils.Constants.DIR_NODE
 import org.tahoe.lafs.utils.Constants.EMPTY
 import org.tahoe.lafs.utils.Constants.PERSONAL_TEXT
 import org.tahoe.lafs.utils.Constants.RO_DIR_VALUE
+import org.tahoe.lafs.utils.Constants.SUBFOLDER_SUFFIX
 import org.tahoe.lafs.utils.SharedPreferenceKeys.GRID_DATA
 import org.tahoe.lafs.utils.SharedPreferenceKeys.GRID_SYNC_TIMESTAMP
 import timber.log.Timber
@@ -187,29 +189,44 @@ object GridApiDataHandler {
         return nodesList
     }
 
-    fun arrangeFilesAndSubFolders(filesFolderNodes: List<GridNode>): MutableList<GridNode> {
-        val arrangedList: MutableList<GridNode> = mutableListOf()
+    fun arrangeFilesAndSubFolders(
+        filesFolderNodes: List<GridNode>,
+        rootName: String
+    ): MutableList<GridNode> {
 
-        //get list of all directories & files
-        val directories: List<GridNode> = filesFolderNodes.filter { it.isDir }
-        val files: List<GridNode> = filesFolderNodes.filter { !it.isDir }
-        for (file in files) {
-            var isDirectoryFound = false
-            for (directory in directories) {
-                if (file.name.contains(directory.name)) {
-                    directory.filesList.add(file)
-                    isDirectoryFound = true
-                    break
+        for (node in filesFolderNodes) {
+            node.parentName = getParentName(node.name, rootName)
+        }
+
+        for (node in filesFolderNodes) {
+            if (node.isDir) {
+                val fileList =
+                    filesFolderNodes.filter { it.parentName == node.name.getShortCollectiveFolderName() }
+
+                if (fileList.isNotEmpty()) {
+                    node.filesList.addAll(fileList)
                 }
-            }
-
-            if (!isDirectoryFound) {
-                arrangedList.add(file)
             }
         }
 
-        arrangedList.addAll(directories)
-        return arrangedList
+        return filesFolderNodes.filter { it.parentName == rootName }.toMutableList()
+    }
+
+    private fun getParentName(nodeName: String, defaultValue: String): String {
+        val elements = nodeName.split(SUBFOLDER_SUFFIX)
+
+        val totalElements = elements.count()
+        if (totalElements > 2) {
+            return if (elements[totalElements - 1] == EMPTY) {
+                elements[totalElements - 3]
+            } else {
+                elements[totalElements - 2]
+            }
+        } else if (totalElements == 2 && elements[totalElements - 1] != EMPTY) {
+            return elements[0]
+        }
+
+        return defaultValue
     }
 
     fun saveGridData(gridList: List<GridNode>, preferences: SharedPreferences) {

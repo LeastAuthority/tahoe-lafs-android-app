@@ -25,9 +25,10 @@
                     style="@style/TextWhite.H6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingTop="@dimen/xsmall"
                     android:textColor="@android:color/white"
                     tools:ignore="RelativeOverlap"
-                    android:paddingTop="@dimen/xsmall"
                     tools:text="Demo Grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
