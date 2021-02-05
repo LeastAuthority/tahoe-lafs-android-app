@@ -30,7 +30,11 @@ fun String.getShortCollectiveFolderName(): String {
                 return list[list.count() - 1]
             }
         } else if (list.count() == 2)
-            return list[0]
+            if (list[list.count() - 1] == EMPTY) {
+                return list[0]
+            } else {
+                return list[1]
+            }
     }
     return modifiedString
 }

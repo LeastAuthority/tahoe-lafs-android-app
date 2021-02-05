@@ -170,7 +170,7 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
             FileUtils.saveFile(
                 body,
                 FileUtils.createOrGetFile(
-                    fileName,
+                    fileName.getShortCollectiveFolderName(),
                     FileUtils.getFolderName(requireContext())
                 ).absolutePath
             )
