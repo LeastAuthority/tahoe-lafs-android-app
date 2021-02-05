@@ -195,13 +195,19 @@ object GridApiDataHandler {
     ): MutableList<GridNode> {
 
         for (node in filesFolderNodes) {
-            node.parentName = getParentName(node.name, rootName)
+            val parentName = getParentName(node.name, rootName)
+            if (parentName.isNotEmpty()) {
+                node.parentName = "$rootName/$parentName"
+            } else {
+                node.parentName = rootName
+            }
         }
 
         for (node in filesFolderNodes) {
             if (node.isDir) {
+                val filterKey = node.parentName + "/" + node.name.getShortCollectiveFolderName()
                 val fileList =
-                    filesFolderNodes.filter { it.parentName == node.name.getShortCollectiveFolderName() }
+                    filesFolderNodes.filter { it.parentName == filterKey }
 
                 if (fileList.isNotEmpty()) {
                     node.filesList.addAll(fileList)
@@ -217,16 +223,24 @@ object GridApiDataHandler {
 
         val totalElements = elements.count()
         if (totalElements > 2) {
-            return if (elements[totalElements - 1] == EMPTY) {
-                elements[totalElements - 3]
+            if (elements[totalElements - 1] == EMPTY) {
+                return elements[totalElements - 3]
             } else {
-                elements[totalElements - 2]
+                val path = StringBuilder()
+                for (i in totalElements downTo 2) {
+                    path.append(elements[totalElements - i])
+                    path.append("/")
+                }
+                if (path.isNotEmpty()) {
+                    path.deleteCharAt(path.length - 1)
+                }
+                return path.toString()
             }
         } else if (totalElements == 2 && elements[totalElements - 1] != EMPTY) {
             return elements[0]
         }
 
-        return defaultValue
+        return EMPTY
     }
 
     fun saveGridData(gridList: List<GridNode>, preferences: SharedPreferences) {
