@@ -20,5 +20,5 @@
     <string name="download_started">   File download started…   </string>
     <string name="download_failed">   Download Failed.   </string>
     <string name="grant_download_permission">Please grant write access to save files.</string>
-    <string name="download_successfully">   File downloaded successfully.   </string>
+    <string name="download_successfully">   File downloaded successfully and is now available on your device.   </string>
 </resources>
