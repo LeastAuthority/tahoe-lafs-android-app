@@ -67,6 +67,29 @@ fun String.getEndPointIp(): String {
     return "0.0.0.0"
 }
 
+fun String.getTokenFromScanUrl(): String {
+    // URL Format https://192.168.1.7:8090 URI:DIR2:z3wsdvnyzpaxtti6kr6kknfs5y:bwuindppvdewvsrrhjwgk5ripvrdprrzbbxzjt5jbisncwlyrrkq /j0397sfhLnPXJYMqHM2RXtuZFVC+hP5cbzfSrlRC8U=
+    if (this.isNotBlank()) {
+        val fullUrl = this.split(" ")
+        if (fullUrl.isNotEmpty() && fullUrl.size > 2) {
+            return fullUrl[2]
+        }
+    }
+    return EMPTY
+}
+
+fun String.getBaseUrlFromScanUrl(): String {
+    // URL Format https://192.168.1.7:8090 URI:DIR2:z3wsdvnyzpaxtti6kr6kknfs5y:bwuindppvdewvsrrhjwgk5ripvrdprrzbbxzjt5jbisncwlyrrkq /j0397sfhLnPXJYMqHM2RXtuZFVC+hP5cbzfSrlRC8U=
+    if (this.isNotBlank()) {
+        val fullUrl = this.split(" ")
+        if (fullUrl.isNotEmpty()) {
+            return fullUrl[0] + " " + fullUrl[1]
+        }
+    }
+    return EMPTY
+}
+
+
 fun String.formattedFolderUrl() = this.replace(" ", URI_SCHEMA).plus(TYPE_JSON)
 
 fun Long.getLastUpdatedText(context: Context): String {

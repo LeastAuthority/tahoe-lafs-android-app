@@ -46,6 +46,7 @@ class MagicFolderFragment : BaseFragment(), GridItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scannedUrl = preferences.get(SCANNER_URL, EMPTY)
+        Timber.d("Scanned url = $scannedUrl")
         initView()
         initListeners()
 
