@@ -13,6 +13,7 @@ class DnsOverride(private val dns: Dns) : Dns {
     }
 
     override fun lookup(hostname: String): List<InetAddress> {
+        Timber.d("lookup is in progress for $hostname")
         val override = overrides[hostname]
 
         if (override != null) {

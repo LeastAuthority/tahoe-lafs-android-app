@@ -90,7 +90,9 @@ fun String.getBaseUrlFromScanUrl(): String {
 }
 
 
-fun String.formattedFolderUrl() = this.replace(" ", URI_SCHEMA).plus(TYPE_JSON)
+fun String.formattedFolderUrl() =
+    //this.replace(" ", URI_SCHEMA).replace("192.168.1.3", "192.168.1.3.invalid").plus(TYPE_JSON)
+    this.replace(" ", URI_SCHEMA).plus(TYPE_JSON)
 
 fun Long.getLastUpdatedText(context: Context): String {
     val lastUpdatedTime = Date().time - this

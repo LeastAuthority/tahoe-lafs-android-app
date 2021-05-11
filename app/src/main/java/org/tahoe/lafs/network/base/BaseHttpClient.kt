@@ -81,12 +81,18 @@ abstract class BaseHttpClient(
         val shaKey = preferences.get(SCANNER_TOKEN, Constants.EMPTY)
 
         val certificatePinner: CertificatePinner = CertificatePinner.Builder()
-            .add(hostName, "sha256$shaKey")
+            //.add(hostName, "sha256$shaKey")
+            .add("$hostName.invalid", "sha256$shaKey")
             .build()
 
-        val builder = getUnsafeOkHttpClient()
+        val builder = OkHttpClient.Builder()
             .certificatePinner(certificatePinner)
-            .dns(DnsOverride(Dns.SYSTEM))
+            .dns(
+                DnsOverride.build(
+                    Dns.SYSTEM,
+                    listOf("$hostName.invalid:$hostName")
+                )
+            )
             .cache(cache)
             .readTimeout(60, TimeUnit.SECONDS)
 
