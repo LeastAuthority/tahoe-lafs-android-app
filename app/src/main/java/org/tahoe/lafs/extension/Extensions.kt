@@ -1,6 +1,7 @@
 package org.tahoe.lafs.extension
 
 import android.content.Context
+import android.os.Build
 import org.tahoe.lafs.R
 import org.tahoe.lafs.utils.Constants.COLLECTIVE_TEXT
 import org.tahoe.lafs.utils.Constants.EMPTY
@@ -24,16 +25,16 @@ fun String.getShortCollectiveFolderName(): String {
     if (modifiedString.contains(SUBFOLDER_SUFFIX, true)) {
         val list = modifiedString.split(SUBFOLDER_SUFFIX)
         if (list.count() > 2) {
-            if (list[list.count() - 1] == EMPTY) {
-                return list[list.count() - 2]
+            return if (list[list.count() - 1] == EMPTY) {
+                list[list.count() - 2]
             } else {
-                return list[list.count() - 1]
+                list[list.count() - 1]
             }
         } else if (list.count() == 2)
-            if (list[list.count() - 1] == EMPTY) {
-                return list[0]
+            return if (list[list.count() - 1] == EMPTY) {
+                list[0]
             } else {
-                return list[1]
+                list[1]
             }
     }
     return modifiedString
@@ -90,27 +91,47 @@ fun String.getBaseUrlFromScanUrl(): String {
 }
 
 
-fun String.formattedFolderUrl() =
-    //this.replace(" ", URI_SCHEMA).replace("192.168.1.3", "192.168.1.3.invalid").plus(TYPE_JSON)
-    this.replace(" ", URI_SCHEMA).plus(TYPE_JSON)
+fun String.formattedFolderUrl() = this.replace(" ", URI_SCHEMA).plus(TYPE_JSON)
 
 fun Long.getLastUpdatedText(context: Context): String {
     val lastUpdatedTime = Date().time - this
 
-    return if (lastUpdatedTime < ONE_MINUTE) {
-        context.getString(R.string.last_updated_just_now)
-    } else if (lastUpdatedTime in ONE_MINUTE until ONE_HOUR) {
-        val minutes = lastUpdatedTime / ONE_MINUTE
-        context.resources.getQuantityString(
-            R.plurals.last_updated_minutes_text,
-            minutes.toInt(),
-            minutes
-        )
-    } else if (lastUpdatedTime in ONE_HOUR until ONE_DAY) {
-        val hours = lastUpdatedTime / ONE_HOUR
-        context.resources.getQuantityString(R.plurals.last_updated_hours_text, hours.toInt(), hours)
-    } else {
-        val days = lastUpdatedTime / ONE_DAY
-        context.resources.getQuantityString(R.plurals.last_updated_days_text, days.toInt(), days)
+    return when {
+        lastUpdatedTime < ONE_MINUTE -> {
+            context.getString(R.string.last_updated_just_now)
+        }
+        lastUpdatedTime in ONE_MINUTE until ONE_HOUR -> {
+            val minutes = lastUpdatedTime / ONE_MINUTE
+            context.resources.getQuantityString(
+                R.plurals.last_updated_minutes_text,
+                minutes.toInt(),
+                minutes
+            )
+        }
+        lastUpdatedTime in ONE_HOUR until ONE_DAY -> {
+            val hours = lastUpdatedTime / ONE_HOUR
+            context.resources.getQuantityString(
+                R.plurals.last_updated_hours_text,
+                hours.toInt(),
+                hours
+            )
+        }
+        else -> {
+            val days = lastUpdatedTime / ONE_DAY
+            context.resources.getQuantityString(
+                R.plurals.last_updated_days_text,
+                days.toInt(),
+                days
+            )
+        }
     }
+}
+
+fun String.getRawCertificate(): String {
+    val decodedBytes = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        Base64.getMimeDecoder().decode(this)
+    } else {
+        android.util.Base64.decode(this, android.util.Base64.DEFAULT)
+    }
+    return String(decodedBytes)
 }

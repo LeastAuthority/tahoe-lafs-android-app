@@ -16,6 +16,8 @@ object Constants {
     const val ONE_HOUR: Long = ONE_MINUTE * 60
     const val ONE_DAY: Long = ONE_HOUR * 24
     const val TAHOE_LAFS_FOLDER = "/Tahoe-LAFS/"
+    const val BEGIN_CERTIFICATE_TAG = "-----BEGIN CERTIFICATE-----\n"
+    const val END_CERTIFICATE_TAG = "-----END CERTIFICATE-----"
 }
 
 object SharedPreferenceKeys {
