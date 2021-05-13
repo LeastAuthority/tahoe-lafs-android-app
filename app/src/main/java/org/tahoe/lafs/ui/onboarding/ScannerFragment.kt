@@ -10,10 +10,14 @@ import com.budiyev.android.codescanner.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_scan.*
 import org.tahoe.lafs.R
+import org.tahoe.lafs.extension.getActualApiUrl
+import org.tahoe.lafs.extension.getTokenFromScanUrl
 import org.tahoe.lafs.extension.set
 import org.tahoe.lafs.ui.base.BaseFragment
 import org.tahoe.lafs.ui.home.HomeActivity
+import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_TOKEN
 import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_URL
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,8 +54,10 @@ class ScannerFragment : BaseFragment() {
 
     private fun addCallbacks() {
         codeScanner.decodeCallback = DecodeCallback {
+            Timber.d("Scanned value is = $it")
             activity?.runOnUiThread {
-                preferences.set(SCANNER_URL, it.text)
+                preferences.set(SCANNER_URL, it.text.getActualApiUrl())
+                preferences.set(SCANNER_TOKEN, it.text.getTokenFromScanUrl())
                 startActivity(Intent(activity, HomeActivity::class.java))
                 activity?.finish()
             }

@@ -47,6 +47,8 @@ fun SharedPreferences.clear() = edit().clear().apply()
 
 fun SharedPreferences.clearGridData() {
     remove(SharedPreferenceKeys.SCANNER_URL)
+    remove(SharedPreferenceKeys.SCANNER_TOKEN)
     remove(SharedPreferenceKeys.GRID_DATA)
+    remove(SharedPreferenceKeys.DIR_NODE_DATA)
     remove(SharedPreferenceKeys.GRID_SYNC_TIMESTAMP)
 }

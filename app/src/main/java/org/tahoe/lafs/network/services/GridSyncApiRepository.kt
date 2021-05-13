@@ -11,6 +11,11 @@ class GridSyncApiRepository @Inject constructor(
     private val gridSyncApiService: GridSyncApiService
 ) : BaseRepository() {
 
+    suspend fun getRootLevelDirUrl(scanUrl: String): ResponseBody {
+        ensureInternetConnection()
+        return gridSyncApiService.getRootLevelDirUrl(scanUrl)
+    }
+
     suspend fun getFolderStructure(scanUrl: String): JsonElement {
         ensureInternetConnection()
         return gridSyncApiService.getFolderStructure(scanUrl)

@@ -8,6 +8,9 @@ import retrofit2.http.Url
 interface GridSyncApiService {
 
     @GET
+    suspend fun getRootLevelDirUrl(@Url url: String): ResponseBody
+
+    @GET
     suspend fun getFolderStructure(@Url url: String): JsonElement
 
     @GET
