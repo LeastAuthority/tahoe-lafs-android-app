@@ -8,15 +8,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
-import org.tahoe.lafs.extension.formattedFolderUrl
-import org.tahoe.lafs.extension.getBaseUrl
-import org.tahoe.lafs.extension.getShortCollectiveFolderName
+import org.tahoe.lafs.extension.*
 import org.tahoe.lafs.network.base.*
 import org.tahoe.lafs.network.services.GridApiDataHandler
 import org.tahoe.lafs.network.services.GridNode
 import org.tahoe.lafs.network.services.GridSyncApiRepository
+import org.tahoe.lafs.utils.Constants.EMPTY
 import org.tahoe.lafs.utils.Constants.TYPE_JSON
 import org.tahoe.lafs.utils.Constants.URI_SCHEMA
+import org.tahoe.lafs.utils.SharedPreferenceKeys.DIR_NODE_DATA
 
 class GetFileStructureViewModel @ViewModelInject constructor(
     private val gridSyncApiRepository: GridSyncApiRepository,
@@ -34,8 +34,25 @@ class GetFileStructureViewModel @ViewModelInject constructor(
             _filesData.postValue(Resource.Loading())
             try {
                 coroutineScope {
+                    val dirNodeUrl = preferences.get(DIR_NODE_DATA, EMPTY)
+
+                    if (dirNodeUrl.isEmpty()) {
+                        //Send Request to get Dir Node URLs
+                        val rootDirUrlRequest =
+                            async { gridSyncApiRepository.getRootLevelDirUrl(url) }
+                        val rootDirUrlResponse = rootDirUrlRequest.await()
+                        val rootDirUrlString = rootDirUrlResponse.string()
+                        if (rootDirUrlString.isNotBlank()) {
+                            preferences.set(DIR_NODE_DATA, rootDirUrlString)
+                        }
+                    }
+
+                    // prepare url BASE_URL + URI + ACTUAL_ROOT_LEVEL_URL
+                    val magicUrl =
+                        url.getBaseUrl() + URI_SCHEMA + preferences.get(DIR_NODE_DATA, EMPTY)
+
                     val magicFolderRequest =
-                        async { gridSyncApiRepository.getFolderStructure(url.formattedFolderUrl()) }
+                        async { gridSyncApiRepository.getFolderStructure(magicUrl.formattedFolderUrl()) }
                     val gridNodes =
                         GridApiDataHandler.getMagicFolderGridNodes(
                             magicFolderRequest.await(),

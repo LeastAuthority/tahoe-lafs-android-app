@@ -41,14 +41,16 @@ fun String.getShortCollectiveFolderName(): String {
 }
 
 /**
- * Scanned URL format: http://192.168.43.253:8089 URI:DIR2:wbnn6tzynjrnq6hpjnodkmef34:mm5vu33lw3escdkgw3z65tr5suf2q7xiw66s5qmpgm
- */
+ * Scanned URL format
+ * https://10.137.0.16:58483/XOu4O4wM0UMQhRErgJ4GAZgQ9hTeh68m LS0tLSsdfsdfsdfsf==
+ **/
 fun String.getBaseUrl(): String {
     if (this.isNotBlank()) {
-        val baseUrl = this.split(" ")[0]
-        if (baseUrl.isNotEmpty()) {
-            Timber.d("Full parse URL = $baseUrl")
-            return baseUrl
+        val fullUrl = this.split(" ")[0]
+        if (fullUrl.isNotEmpty()) {
+            Timber.d("Full parse URL = $fullUrl")
+            val url = URL(fullUrl)
+            return "${url.protocol}://${url.host}:${url.port}"
         }
     }
     return EMPTY
@@ -68,23 +70,25 @@ fun String.getEndPointIp(): String {
     return "0.0.0.0"
 }
 
+/**
+ *https://10.137.0.16:58483/XOu4O4wM0UMQhRErgJ4GAZgQ9hTeh68m LS0tLSsdfsdfsdfsf==
+ **/
 fun String.getTokenFromScanUrl(): String {
-    // URL Format https://192.168.1.7:8090 URI:DIR2:z3wsdvnyzpaxtti6kr6kknfs5y:bwuindppvdewvsrrhjwgk5ripvrdprrzbbxzjt5jbisncwlyrrkq /j0397sfhLnPXJYMqHM2RXtuZFVC+hP5cbzfSrlRC8U=
     if (this.isNotBlank()) {
         val fullUrl = this.split(" ")
-        if (fullUrl.isNotEmpty() && fullUrl.size > 2) {
-            return fullUrl[2]
+        if (fullUrl.isNotEmpty() && fullUrl.size > 1) {
+            return fullUrl[1]
         }
     }
     return EMPTY
 }
 
-fun String.getBaseUrlFromScanUrl(): String {
-    // URL Format https://192.168.1.7:8090 URI:DIR2:z3wsdvnyzpaxtti6kr6kknfs5y:bwuindppvdewvsrrhjwgk5ripvrdprrzbbxzjt5jbisncwlyrrkq /j0397sfhLnPXJYMqHM2RXtuZFVC+hP5cbzfSrlRC8U=
+fun String.getActualApiUrl(): String {
+    // URL Format https://10.137.0.16:58483/XOu4O4wM0UMQhRErgJ4GAZgQ9hTeh68m LS0tLSsdfsdfsdfsf==
     if (this.isNotBlank()) {
         val fullUrl = this.split(" ")
         if (fullUrl.isNotEmpty()) {
-            return fullUrl[0] + " " + fullUrl[1]
+            return fullUrl[0]
         }
     }
     return EMPTY

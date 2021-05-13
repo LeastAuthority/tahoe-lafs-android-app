@@ -23,6 +23,7 @@ object Constants {
 object SharedPreferenceKeys {
     const val SCANNER_URL = "SCANNER_URL"
     const val SCANNER_TOKEN = "SCANNER_TOKEN"
+    const val DIR_NODE_DATA = "DIR_NODE_DATA"
     const val GRID_DATA = "GRID_DATA"
     const val GRID_SYNC_TIMESTAMP = "GRID_SYNC_TIMESTAMP"
 }

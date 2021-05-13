@@ -1,5 +1,6 @@
 package org.tahoe.lafs.network.base
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Build
 import okhttp3.Authenticator
@@ -17,9 +18,16 @@ import org.tahoe.lafs.utils.Constants.END_CERTIFICATE_TAG
 import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_TOKEN
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
 import java.util.*
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 
 abstract class BaseHttpClient(
@@ -27,8 +35,56 @@ abstract class BaseHttpClient(
     private val converterFactory: GsonConverterFactory,
     private val preferences: SharedPreferences
 ) {
+    companion object {
+        @SuppressLint("TrustAllX509TrustManager")
+        fun getUnsafeOkHttpClient(): OkHttpClient.Builder {
+            try {
+                // Create a trust manager that does not validate certificate chains
+                val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+                    @Throws(CertificateException::class)
+                    override fun checkClientTrusted(
+                        chain: Array<X509Certificate>,
+                        authType: String
+                    ) {
+                        //TODO Nothing
+                    }
+
+                    @Throws(CertificateException::class)
+                    override fun checkServerTrusted(
+                        chain: Array<X509Certificate>,
+                        authType: String
+                    ) {
+                        //TODO Nothing
+                    }
+
+                    override fun getAcceptedIssuers(): Array<X509Certificate> {
+                        return arrayOf()
+                    }
+                })
+
+                // Install the all-trusting trust manager
+                val sslContext = SSLContext.getInstance("SSL")
+                sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+                // Create an ssl socket factory with our all-trusting manager
+                val sslSocketFactory = sslContext.socketFactory
+
+                val builder = OkHttpClient.Builder()
+                builder.sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
+                // builder.hostnameVerifier { _, _ -> true }
+                builder.hostnameVerifier(hostnameVerifier = { _, _ -> true })
+
+                return builder
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+
+            return OkHttpClient.Builder()
+        }
+    }
+
     private val httpClient: OkHttpClient by lazy {
-        val builder = CustomTrustClient(cache, getCertificateInputStream()).clientBuilder
+        //val builder = CustomTrustClient(cache, getCertificateInputStream()).clientBuilder
+        val builder = getUnsafeOkHttpClient()
 
         // add interceptors from respective client classes
         getInterceptors()?.forEach {
