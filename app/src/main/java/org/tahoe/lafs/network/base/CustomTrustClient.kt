@@ -2,6 +2,7 @@ package org.tahoe.lafs.network.base
 
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
 import java.security.GeneralSecurityException
@@ -67,6 +68,7 @@ internal class CustomTrustClient(cache: Cache, inputStream: InputStream) {
         for (certificate in certificates) {
             val certificateAlias = (index++).toString()
             keyStore.setCertificateEntry(certificateAlias, certificate)
+            Timber.d("Setting certificate in keystore : $certificate")
         }
 
         // Use it to build an X509 trust manager.

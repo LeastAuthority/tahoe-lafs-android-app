@@ -23,6 +23,6 @@ object ServiceModule {
 
     @Singleton
     @Provides
-    fun providesMplifyMeUserService(gridSyncApiClient: GridSyncApiClient): GridSyncApiService =
+    fun providesGridSyncApiService(gridSyncApiClient: GridSyncApiClient): GridSyncApiService =
         gridSyncApiClient.createService()
 }

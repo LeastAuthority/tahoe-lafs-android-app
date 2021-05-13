@@ -65,7 +65,7 @@ abstract class BaseHttpClient(
     }
 
     private fun getCertificateInputStream(): InputStream {
-        val certificateBS64 = preferences.get(SCANNER_TOKEN, Constants.EMPTY).getRawCertificate()
+        val certificateBS64 = preferences.get(SCANNER_TOKEN, EMPTY).getRawCertificate()
         val certificateString = certificateBS64.replace(BEGIN_CERTIFICATE_TAG, EMPTY)
             .replace(END_CERTIFICATE_TAG, EMPTY) // NEED FOR PEM FORMAT CERT STRING
         val encodedCert = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
