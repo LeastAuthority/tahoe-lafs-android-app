@@ -26,6 +26,7 @@ Production version:
 
 `./gradlew assembleRelease`
 
+To make a signed release build please contact sowmya@leastauthority.com 
 
 LICENCE
 =======
