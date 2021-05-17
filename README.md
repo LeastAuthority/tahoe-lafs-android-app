@@ -41,12 +41,3 @@ licence, at your option.) See the file `COPYING.GPL`_ for the terms of the
 GNU General Public License, version 2. See the file `COPYING.TGPPL`_ for
 the terms of the Transitive Grace Period Public Licence, version 1.0.
 
-See `TGPPL.PDF`_ for why the TGPPL exists, graphically illustrated on three
-slides.
-
-.. _OSPackages: https://tahoe-lafs.org/trac/tahoe-lafs/wiki/OSPackages
-.. _Mac: docs/OS-X.rst
-.. _pip: https://pip.pypa.io/en/stable/installing/
-.. _COPYING.GPL: https://github.com/tahoe-lafs/tahoe-lafs/blob/master/COPYING.GPL
-.. _COPYING.TGPPL: https://github.com/tahoe-lafs/tahoe-lafs/blob/master/COPYING.TGPPL.rst
-.. _TGPPL.PDF: https://tahoe-lafs.org/~zooko/tgppl.pdf
