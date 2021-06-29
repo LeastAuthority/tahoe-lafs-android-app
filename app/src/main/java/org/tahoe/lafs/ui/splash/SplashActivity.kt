@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.tahoe.lafs.R
 import org.tahoe.lafs.extension.get
 import org.tahoe.lafs.extension.showFullScreenOverStatusBar
+import org.tahoe.lafs.extension.getActualApiUrl
 import org.tahoe.lafs.ui.home.HomeActivity
 import org.tahoe.lafs.ui.onboarding.StartActivity
 import org.tahoe.lafs.utils.Constants.EMPTY
@@ -30,7 +31,7 @@ class SplashActivity : FragmentActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed({
             val scannerUrl = preferences.get(SharedPreferenceKeys.SCANNER_URL, EMPTY)
-            if (scannerUrl.isNotEmpty()) {
+            if (scannerUrl.isNotEmpty() && scannerUrl.getActualApiUrl() != null) {
                 // If scanning done, on restart take user to HomeActivity
                 startActivity(Intent(this, HomeActivity::class.java))
             } else {

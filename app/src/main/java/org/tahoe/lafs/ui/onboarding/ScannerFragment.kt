@@ -13,6 +13,7 @@ import org.tahoe.lafs.R
 import org.tahoe.lafs.extension.getActualApiUrl
 import org.tahoe.lafs.extension.getTokenFromScanUrl
 import org.tahoe.lafs.extension.set
+import org.tahoe.lafs.extension.fold
 import org.tahoe.lafs.ui.base.BaseFragment
 import org.tahoe.lafs.ui.home.HomeActivity
 import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_TOKEN
@@ -56,10 +57,17 @@ class ScannerFragment : BaseFragment() {
         codeScanner.decodeCallback = DecodeCallback {
             Timber.d("Scanned value is = $it")
             activity?.runOnUiThread {
-                preferences.set(SCANNER_URL, it.text.getActualApiUrl())
-                preferences.set(SCANNER_TOKEN, it.text.getTokenFromScanUrl())
-                startActivity(Intent(activity, HomeActivity::class.java))
-                activity?.finish()
+                it.text.getActualApiUrl().fold ({ url -> 
+                    preferences.set(SCANNER_URL, url.toString())
+                    preferences.set(SCANNER_TOKEN, it.text.getTokenFromScanUrl())
+                    startActivity(Intent(activity, HomeActivity::class.java))
+                    activity?.finish()
+                }, {
+                    Toast.makeText(
+                      requireContext(), "Invalid URL", Toast.LENGTH_SHORT
+                    ).show()
+                })
+
             }
         }
         codeScanner.errorCallback = ErrorCallback {

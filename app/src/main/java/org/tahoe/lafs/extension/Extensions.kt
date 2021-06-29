@@ -13,6 +13,7 @@ import org.tahoe.lafs.utils.Constants.TYPE_JSON
 import org.tahoe.lafs.utils.Constants.URI_SCHEMA
 import timber.log.Timber
 import java.net.URL
+import java.net.MalformedURLException
 import java.util.*
 
 /**
@@ -83,17 +84,29 @@ fun String.getTokenFromScanUrl(): String {
     return EMPTY
 }
 
-fun String.getActualApiUrl(): String {
+fun String.getActualApiUrl(): URL? {
     // URL Format https://10.137.0.16:58483/XOu4O4wM0UMQhRErgJ4GAZgQ9hTeh68m LS0tLSsdfsdfsdfsf==
     if (this.isNotBlank()) {
         val fullUrl = this.split(" ")
         if (fullUrl.isNotEmpty()) {
-            return fullUrl[0]
+            try {
+              return URL(fullUrl[0]);
+            } catch (e: MalformedURLException) {
+              Timber.e("Invalid URL text: ${fullUrl[0]}")
+            }
         }
     }
-    return EMPTY
+
+    return null
 }
 
+fun <I, O> I?.fold(ifPresent: (I) -> O, ifAbsent: () -> O): O {
+    if (this != null) {
+        return ifPresent(this)
+    } else {
+        return ifAbsent()
+    }
+}
 
 fun String.formattedFolderUrl() = this.replace(" ", URI_SCHEMA).plus(TYPE_JSON)
 
