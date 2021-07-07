@@ -18,14 +18,11 @@ jobs:
         run: "./gradlew test deviceCheck"
       - name: "Create release apk"
         run: "./gradlew assembleRelease"
-
-  copy-apk:
-    needs:
-      - "compile-and-test"
-    runs-on: "ubuntu-latest"
-    steps:
+      - name: "Show all files"
+        run: "find ${GITHUB_WORKSPACE} -type f"
       - name: "Copy APK"
         uses: "actions/upload-artifact@v2"
         with:
           name: "tahoe-lafs-android"
           path: "./app/build/outputs/apk/release/app-release-unsigned.apk"
+          if-no-files-found: "error"
