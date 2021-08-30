@@ -6,12 +6,10 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import com.budiyev.android.codescanner.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_scan.*
 import org.tahoe.lafs.R
-import org.tahoe.lafs.extension.getActualApiUrl
-import org.tahoe.lafs.extension.getTokenFromScanUrl
+import org.tahoe.lafs.extension.performBackPress
 import org.tahoe.lafs.extension.set
 import org.tahoe.lafs.ui.base.BaseFragment
 import org.tahoe.lafs.ui.home.HomeActivity
@@ -19,14 +17,16 @@ import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_TOKEN
 import org.tahoe.lafs.utils.SharedPreferenceKeys.SCANNER_URL
 import timber.log.Timber
 import javax.inject.Inject
+import org.tahoe.lafs.model.QRCodeContents
 
 @AndroidEntryPoint
-class ScannerFragment : BaseFragment() {
+open class ScannerFragment : BaseFragment() {
 
     @Inject
     lateinit var preferences: SharedPreferences
 
-    private lateinit var codeScanner: CodeScanner
+    @Inject
+    lateinit var qrCodeScanner: QRCodeScanner
 
     override fun getLayoutId() = R.layout.fragment_scan
 
@@ -36,39 +36,35 @@ class ScannerFragment : BaseFragment() {
         checkCameraPermissions()
 
         if (permissionGranted) {
-            initCodeScanner()
-            addCallbacks()
-            codeScanner.startPreview()
+            qrCodeScanner.init(requireContext(), scanner_view)
+            qrCodeScanner.scan(this::handleScannerText, this::handleScannerError)
         }
     }
 
-    private fun initCodeScanner() {
-        codeScanner = CodeScanner(requireContext(), scanner_view)
-        codeScanner.camera = CodeScanner.CAMERA_BACK
-        codeScanner.formats = CodeScanner.TWO_DIMENSIONAL_FORMATS
-        codeScanner.autoFocusMode = AutoFocusMode.SAFE
-        codeScanner.scanMode = ScanMode.SINGLE
-        codeScanner.isAutoFocusEnabled = true
-        codeScanner.isFlashEnabled = false
-    }
+    private fun handleScannerText(text: String) {
+        Timber.d("Scanned value is = $text")
 
-    private fun addCallbacks() {
-        codeScanner.decodeCallback = DecodeCallback {
-            Timber.d("Scanned value is = $it")
-            activity?.runOnUiThread {
-                preferences.set(SCANNER_URL, it.text.getActualApiUrl())
-                preferences.set(SCANNER_TOKEN, it.text.getTokenFromScanUrl())
+        activity?.runOnUiThread {
+            QRCodeContents.parseContents(text).fold({ contents ->
+                preferences.set(SCANNER_URL, contents.url.url.toString())
+                preferences.set(SCANNER_TOKEN, contents.token)
                 startActivity(Intent(activity, HomeActivity::class.java))
                 activity?.finish()
-            }
-        }
-        codeScanner.errorCallback = ErrorCallback {
-            activity?.runOnUiThread {
+            }, { error ->
                 Toast.makeText(
-                    requireContext(), "Camera initialization error: ${it.message}",
-                    Toast.LENGTH_LONG
+                    requireContext(), error.message, Toast.LENGTH_SHORT
                 ).show()
-            }
+                performBackPress()
+            })
+        }
+    }
+
+    private fun handleScannerError(error: Exception) {
+        activity?.runOnUiThread {
+            Toast.makeText(
+                requireContext(), "Camera initialization error: $error",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -79,9 +75,8 @@ class ScannerFragment : BaseFragment() {
         if (requestCode == RC_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 permissionGranted = true
-                initCodeScanner()
-                addCallbacks()
-                codeScanner.startPreview()
+                qrCodeScanner.init(requireContext(), scanner_view)
+                qrCodeScanner.scan(this::handleScannerText, this::handleScannerError)
             } else {
                 permissionGranted = false
             }
@@ -91,13 +86,13 @@ class ScannerFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         if (permissionGranted) {
-            codeScanner.startPreview()
+            qrCodeScanner.scan(this::handleScannerText, this::handleScannerError)
         }
     }
 
     override fun onPause() {
         if (permissionGranted) {
-            codeScanner.releaseResources()
+            qrCodeScanner.release()
         }
         super.onPause()
     }

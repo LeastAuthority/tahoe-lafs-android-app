@@ -13,6 +13,7 @@ import org.tahoe.lafs.utils.Constants.TYPE_JSON
 import org.tahoe.lafs.utils.Constants.URI_SCHEMA
 import timber.log.Timber
 import java.net.URL
+import java.net.MalformedURLException
 import java.util.*
 
 /**
@@ -69,31 +70,6 @@ fun String.getEndPointIp(): String {
     }
     return "0.0.0.0"
 }
-
-/**
- *https://10.137.0.16:58483/XOu4O4wM0UMQhRErgJ4GAZgQ9hTeh68m LS0tLSsdfsdfsdfsf==
- **/
-fun String.getTokenFromScanUrl(): String {
-    if (this.isNotBlank()) {
-        val fullUrl = this.split(" ")
-        if (fullUrl.isNotEmpty() && fullUrl.size > 1) {
-            return fullUrl[1]
-        }
-    }
-    return EMPTY
-}
-
-fun String.getActualApiUrl(): String {
-    // URL Format https://10.137.0.16:58483/XOu4O4wM0UMQhRErgJ4GAZgQ9hTeh68m LS0tLSsdfsdfsdfsf==
-    if (this.isNotBlank()) {
-        val fullUrl = this.split(" ")
-        if (fullUrl.isNotEmpty()) {
-            return fullUrl[0]
-        }
-    }
-    return EMPTY
-}
-
 
 fun String.formattedFolderUrl() = this.replace(" ", URI_SCHEMA).plus(TYPE_JSON)
 

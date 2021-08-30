@@ -9,6 +9,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Cache
+import org.tahoe.lafs.ui.onboarding.QRCodeScanner
+import org.tahoe.lafs.ui.onboarding.ZxingQRCodeScanner
 import java.io.File
 import javax.inject.Singleton
 
@@ -51,5 +53,10 @@ object AppModule {
             SHARED_PREFERENCES_NAME,
             Context.MODE_PRIVATE
         )
+    }
+
+    @Provides
+    fun zxingQRCodeScanner(): QRCodeScanner {
+        return ZxingQRCodeScanner()
     }
 }
