@@ -3,19 +3,21 @@ package org.tahoe.lafs.ui.home
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_detail.*
 import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.tahoe.lafs.R
+import org.tahoe.lafs.databinding.FragmentDetailBinding
 import org.tahoe.lafs.extension.*
 import org.tahoe.lafs.network.base.Resource
 import org.tahoe.lafs.network.services.GridNode
@@ -46,6 +48,18 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
 
     override fun getLayoutId() = R.layout.fragment_detail
 
+    private lateinit var binding: FragmentDetailBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        binding = FragmentDetailBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -68,8 +82,8 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
 
     private fun initView() {
         val layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.layoutManager = layoutManager
-        recyclerView.itemAnimator = DefaultItemAnimator()
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.itemAnimator = DefaultItemAnimator()
 
         (activity as HomeActivity).showBackButton()
         (activity as HomeActivity).setToolbarText(
@@ -86,7 +100,7 @@ class DirectoryDetailsFragment : BaseFragment(), GridItemClickListener {
                             { it.name })
                     ), this
                 )
-            recyclerView.adapter = gridFolderAdapter
+            binding.recyclerView.adapter = gridFolderAdapter
         }
     }
 

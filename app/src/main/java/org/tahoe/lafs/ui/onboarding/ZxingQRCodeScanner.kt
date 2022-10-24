@@ -31,7 +31,7 @@ class ZxingQRCodeScanner : QRCodeScanner {
           }
         }
 
-    codeScanner.errorCallback = ErrorCallback { failure(it) }
+    codeScanner.errorCallback = ErrorCallback { failure(Exception(it)) }
 
     codeScanner.startPreview()
   }

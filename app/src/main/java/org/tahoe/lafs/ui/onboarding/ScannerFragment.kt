@@ -4,11 +4,13 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_scan.*
 import org.tahoe.lafs.R
+import org.tahoe.lafs.databinding.FragmentScanBinding
 import org.tahoe.lafs.extension.performBackPress
 import org.tahoe.lafs.extension.set
 import org.tahoe.lafs.ui.base.BaseFragment
@@ -28,6 +30,18 @@ open class ScannerFragment : BaseFragment() {
     @Inject
     lateinit var qrCodeScanner: QRCodeScanner
 
+    private lateinit var binding: FragmentScanBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        binding = FragmentScanBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun getLayoutId() = R.layout.fragment_scan
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,7 +50,7 @@ open class ScannerFragment : BaseFragment() {
         checkCameraPermissions()
 
         if (permissionGranted) {
-            qrCodeScanner.init(requireContext(), scanner_view)
+            qrCodeScanner.init(requireContext(), binding.scannerView)
             qrCodeScanner.scan(this::handleScannerText, this::handleScannerError)
         }
     }
@@ -75,7 +89,7 @@ open class ScannerFragment : BaseFragment() {
         if (requestCode == RC_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 permissionGranted = true
-                qrCodeScanner.init(requireContext(), scanner_view)
+                qrCodeScanner.init(requireContext(), binding.scannerView)
                 qrCodeScanner.scan(this::handleScannerText, this::handleScannerError)
             } else {
                 permissionGranted = false

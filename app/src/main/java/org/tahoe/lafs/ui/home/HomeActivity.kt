@@ -13,10 +13,10 @@ import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.app_bar_home.*
 import org.greenrobot.eventbus.EventBus
 import org.tahoe.lafs.R
+import org.tahoe.lafs.databinding.ActivityHomeBinding
+import org.tahoe.lafs.databinding.AppBarHomeBinding
 import org.tahoe.lafs.extension.clearGridData
 import org.tahoe.lafs.extension.showFullScreenOverStatusBar
 import org.tahoe.lafs.ui.onboarding.StartActivity
@@ -33,8 +33,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var toggle: ActionBarDrawerToggle
 
+    private lateinit var binding: ActivityHomeBinding
+    private lateinit var binding2: AppBarHomeBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        binding2 = AppBarHomeBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_home)
         showFullScreenOverStatusBar()
         setUpToolbar()
@@ -48,14 +53,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         toggle = ActionBarDrawerToggle(
             this,
-            drawerLayout,
+            binding.drawerLayout,
             toolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
-        drawerLayout.addDrawerListener(toggle)
+        binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-        navigationView.setNavigationItemSelectedListener(this)
+        binding.navigationView.setNavigationItemSelectedListener(this)
     }
 
     private fun startNavigationJourney() {
@@ -70,8 +75,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.home_navhost_fragment)
         val backStackEntryCount = navHostFragment?.childFragmentManager?.backStackEntryCount ?: 0
 
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else if (backStackEntryCount > 0) {
             navHostFragment?.childFragmentManager?.popBackStack()
         } else {
@@ -84,9 +89,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * Sets top toolbar text views
      */
     fun setToolbarText(title: String, subTitle: String) {
-        txtToolbarTitle.text = title
-        txtToolbarDesc.text = subTitle
-        btnRefresh.setOnClickListener {
+        binding2.txtToolbarTitle.text = title
+        binding2.txtToolbarDesc.text = subTitle
+        binding2.btnRefresh.setOnClickListener {
             EventBus.getDefault().post(RefreshDataEvent())
         }
     }
@@ -95,7 +100,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * Sets side menu item values
      */
     fun setNavigationViewDetails(gateway: String) {
-        val headerView = navigationView.getHeaderView(0)
+        val headerView = binding.navigationView.getHeaderView(0)
         val txtGatewayDetails = headerView.findViewById<AppCompatTextView>(R.id.txtGatewayDetails)
         txtGatewayDetails.text = getString(R.string.connected_gateway_placeholder, gateway)
     }
@@ -109,14 +114,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (!toggle.isDrawerIndicatorEnabled) {
                 onBackPressed()
             } else {
-                if (drawerLayout.isDrawerOpen(navigationView)) {
-                    drawerLayout.closeDrawer(navigationView)
+                if (binding.drawerLayout.isDrawerOpen(binding.navigationView)) {
+                    binding.drawerLayout.closeDrawer(binding.navigationView)
                 } else {
-                    drawerLayout.openDrawer(navigationView)
+                    binding.drawerLayout.openDrawer(binding.navigationView)
                 }
             }
         }
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        binding2.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
     }
 
     /**
@@ -142,7 +147,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.disconnect -> {
                 preferences.clearGridData()
-                
+
                 // Handle disconnect
                 val intent = Intent(this, StartActivity::class.java)
                 startActivity(intent)
@@ -168,9 +173,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        drawerLayout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 }
 
-class RefreshDataEvent()
+class RefreshDataEvent

@@ -30,9 +30,9 @@ class StartActivity : AppCompatActivity() {
         val graph = inflater.inflate(R.navigation.start_nav_graph)
 
         if (intent.getStringExtra(START_FRAGMENT) == SCANNER_FRAGMENT) {
-            graph.startDestination = R.id.scannerFragment
+            graph.setStartDestination(R.id.scannerFragment)
         } else {
-            graph.startDestination = R.id.introFragment
+            graph.setStartDestination(R.id.introFragment)
         }
 
         navHostFragment.navController.graph = graph

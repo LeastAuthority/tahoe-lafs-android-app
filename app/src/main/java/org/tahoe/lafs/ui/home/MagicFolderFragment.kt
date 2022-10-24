@@ -2,17 +2,19 @@ package org.tahoe.lafs.ui.home
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_magic_folder.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.tahoe.lafs.R
+import org.tahoe.lafs.databinding.FragmentMagicFolderBinding
 import org.tahoe.lafs.extension.get
 import org.tahoe.lafs.extension.getEndPointIp
 import org.tahoe.lafs.extension.getLastUpdatedText
@@ -43,6 +45,18 @@ class MagicFolderFragment : BaseFragment(), GridItemClickListener {
 
     override fun getLayoutId() = R.layout.fragment_magic_folder
 
+    private lateinit var binding: FragmentMagicFolderBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        binding = FragmentMagicFolderBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scannedUrl = preferences.get(SCANNER_URL, EMPTY)
@@ -62,7 +76,7 @@ class MagicFolderFragment : BaseFragment(), GridItemClickListener {
                 gridFolderAdapter =
                     GridFolderAdapter(gridNodes.sortedByDescending { it.isDir }
                         .sortedBy { it.name }, this)
-                recyclerView.adapter = gridFolderAdapter
+                binding.recyclerView.adapter = gridFolderAdapter
             }
         }
     }
@@ -85,8 +99,8 @@ class MagicFolderFragment : BaseFragment(), GridItemClickListener {
 
     private fun initView() {
         val layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.layoutManager = layoutManager
-        recyclerView.itemAnimator = DefaultItemAnimator()
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.itemAnimator = DefaultItemAnimator()
 
         (activity as HomeActivity).showDrawerButton()
         (activity as HomeActivity).setToolbarText(
@@ -114,7 +128,7 @@ class MagicFolderFragment : BaseFragment(), GridItemClickListener {
                         gridFolderAdapter =
                             GridFolderAdapter(gridNodes.sortedByDescending { it.isDir }
                                 .sortedBy { it.name }, this)
-                        recyclerView.adapter = gridFolderAdapter
+                        binding.recyclerView.adapter = gridFolderAdapter
                     } else {
                         showError()
                     }
@@ -138,7 +152,7 @@ class MagicFolderFragment : BaseFragment(), GridItemClickListener {
                         gridFolderAdapter =
                             GridFolderAdapter(allFoldersList.sortedByDescending { it.isDir }
                                 .sortedBy { it.name }, this)
-                        recyclerView.adapter = gridFolderAdapter
+                        binding.recyclerView.adapter = gridFolderAdapter
                     }
                 }
             }
