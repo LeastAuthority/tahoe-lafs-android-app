@@ -16,6 +16,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.chaquo.python' version '12.0.1' apply false
+}
+
 allprojects {
     repositories {
         google()
