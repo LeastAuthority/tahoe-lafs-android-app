@@ -1,7 +1,6 @@
 package org.tahoe.lafs.ui.viewmodel
 
 import android.content.SharedPreferences
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
@@ -17,8 +16,9 @@ import org.tahoe.lafs.utils.Constants.EMPTY
 import org.tahoe.lafs.utils.Constants.TYPE_JSON
 import org.tahoe.lafs.utils.Constants.URI_SCHEMA
 import org.tahoe.lafs.utils.SharedPreferenceKeys.DIR_NODE_DATA
+import javax.inject.Inject
 
-class GetFileStructureViewModel @ViewModelInject constructor(
+class GetFileStructureViewModel @Inject constructor(
     private val gridSyncApiRepository: GridSyncApiRepository,
     private val preferences: SharedPreferences
 ) : BaseViewModel() {
